@@ -16,10 +16,13 @@ import java.util.HashMap;
 
 
 public class JavaFXTemplate extends Application {
-TextField text;
-Button startToGameButton;
-HashMap<String, Scene> sceneMap;
-MenuBar menuBar;
+    TextField text;
+    Button startToGameButton;
+    HashMap<String, Scene> sceneMap;
+    MenuBar menuBar;
+
+    ArrayList<Integer> PlayerNumbers;
+
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -33,7 +36,7 @@ MenuBar menuBar;
         primaryStage.setTitle("Welcome to Keno Game(Project 2)");
 
         startToGameButton = new Button("Start Game");
-        sceneMap = new HashMap<String,Scene>();
+        sceneMap = new HashMap<>();
         text = new TextField();
         menuBar =  new MenuBar();
 
@@ -49,17 +52,13 @@ MenuBar menuBar;
 
     public Scene createStartScene() {
         text.setText("Welcome to Keno Game(Project 2)");
-//        text.setMaxWidth(300);
         text.setPrefWidth(250);
         text.setEditable(false);
-
         //CSS
         text.setStyle("-fx-background-color: clear; -fx-font-size: 32; -fx-font-weight: bold;");
         text.setAlignment(Pos.CENTER);
         VBox paneCenter = new VBox(10, text , startToGameButton);
         paneCenter.setAlignment(Pos.CENTER);
-
-
 
         Menu menu = new Menu("Menu");
 
@@ -82,14 +81,7 @@ MenuBar menuBar;
 
     public Scene createGameScene() {
 
-        ArrayList<String> choices = new ArrayList<>();
-//
-//        Button playButton = new Button();
-        //grid pane
-        //row x col
-        //make button
-        //give it a name
-        //add button to that grid address
+        PlayerNumbers = new ArrayList<>();
 
         GridPane daGrid = new GridPane();
         int num = 1;
@@ -97,10 +89,15 @@ MenuBar menuBar;
             for(int _y = 0; _y < 8; _y++ ){
                 Button button = new Button(""+ num);
                 button.setMinWidth(40);
+                button.setDisable(true);
+
+//                button.setOnAction(e -> );
+
                 daGrid.add(button, _y, _x);
                 num++;
             }
         }
+        daGrid.setAlignment(Pos.CENTER_LEFT);
 
         //button e_> get.soucre
 //
@@ -123,11 +120,24 @@ MenuBar menuBar;
 //        //end on pick roles
 //
 //
+        Button PlayButton = new Button("Play");
+        PlayButton.setDisable(true);
+//        PlayButton.setOnAction();
+
+        Button randomPicks = new Button("random");
+//        randomPicks.setOnAction();
+
+
+        VBox RightButtons = new VBox(pickBut, randomPicks,PlayButton);
+        RightButtons.setSpacing(15);
+        RightButtons.setAlignment(Pos.CENTER);
+
         BorderPane root = new BorderPane();
         root.setStyle("-fx-background-color: skyblue;");
         root.setCenter(daGrid);
-        root.setRight(pickBut);//
-//
+
+        root.setRight(RightButtons);//
+
 //        Scene scene = new Scene(root, 700, 700);
 //        primaryStage.setScene(scene);
 //        primaryStage.show();
