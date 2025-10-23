@@ -86,7 +86,7 @@ public class JavaFXTemplate extends Application {
 
     public Scene createGameScene() {
 
-        player.playerNumbers = new ArrayList<>();
+        player.playerPicks = new ArrayList<>();
 
         GridPane daGrid = new GridPane();
         int num = 1;
