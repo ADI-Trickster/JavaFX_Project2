@@ -18,7 +18,7 @@ public class Player {
         return playerPicks;
     }
 
-    public void MaxPicks(int picks){
+    public void setMaxPicks(int picks){
         this.maxPicks = picks;
     }
 
@@ -33,8 +33,12 @@ public class Player {
                 this.playerPicks.add(pick);
             }
         }else{
-            this.playerPicks.remove((Integer) pick);
+            removePlayerChoice(pick);
         }
+    }
+
+    public void removePlayerChoice(int pick){
+        this.playerPicks.remove((Integer)pick);
     }
 
     public void addWinnings(int wonFromDraw){
@@ -45,8 +49,17 @@ public class Player {
         return this.totalWinnning;
     }
 
-    public void makeRandom(){
+    public void quickPickAll(){
         this.playerPicks.clear();
+        while(this.playerPicks.size()< maxPicks){
+            int pick = random.nextInt(80) + 1;
+            if(!this.playerPicks.contains(pick)){
+                this.playerPicks.add(pick);
+            }
+        }
+    }
+
+    public void quickFill(){
         while(this.playerPicks.size()< maxPicks){
             int pick = random.nextInt(80) + 1;
             if(!this.playerPicks.contains(pick)){
