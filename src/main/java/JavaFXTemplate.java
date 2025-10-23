@@ -1,3 +1,4 @@
+import javafx.animation.PauseTransition;
 import javafx.application.Application;
 
 import javafx.geometry.Pos;
@@ -10,6 +11,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,8 +23,11 @@ public class JavaFXTemplate extends Application {
     HashMap<String, Scene> sceneMap;
     MenuBar menuBar;
 
-    ArrayList<Integer> PlayerNumbers;
+    PauseTransition pause = new PauseTransition(Duration.seconds(3));
 
+//    ArrayList<Integer> PlayerNumbers;
+
+    Player player = new Player();
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -60,7 +65,7 @@ public class JavaFXTemplate extends Application {
         VBox paneCenter = new VBox(10, text , startToGameButton);
         paneCenter.setAlignment(Pos.CENTER);
 
-        Menu menu = new Menu("Menu");
+        Menu menu = new Menu("Menu ⬇");
 
         Menu Rules = new Menu("Rules");
         Menu Odds = new Menu("Odds");
@@ -81,7 +86,7 @@ public class JavaFXTemplate extends Application {
 
     public Scene createGameScene() {
 
-        PlayerNumbers = new ArrayList<>();
+        player.playerNumbers = new ArrayList<>();
 
         GridPane daGrid = new GridPane();
         int num = 1;
@@ -89,19 +94,16 @@ public class JavaFXTemplate extends Application {
             for(int _y = 0; _y < 8; _y++ ){
                 Button button = new Button(""+ num);
                 button.setMinWidth(40);
-                button.setDisable(true);
-
+//                button.setDisable(true);
 //                button.setOnAction(e -> );
-
                 daGrid.add(button, _y, _x);
                 num++;
             }
         }
+        daGrid.setDisable(true);
         daGrid.setAlignment(Pos.CENTER_LEFT);
 
         //button e_> get.soucre
-//
-//
 //
 //        //pick rolls
         Button pick1Button = new Button("  1 roll");
@@ -120,15 +122,18 @@ public class JavaFXTemplate extends Application {
 //        //end on pick roles
 //
 //
-        Button PlayButton = new Button("Play");
-        PlayButton.setDisable(true);
-//        PlayButton.setOnAction();
 
         Button randomPicks = new Button("random");
-//        randomPicks.setOnAction();
+//        randomPicks.setOnAction(e -> {});
 
+        Button clear = new Button("clear");
+//        clear.setOnAction(e -> {})
 
-        VBox RightButtons = new VBox(pickBut, randomPicks,PlayButton);
+        Button PlayButton = new Button("Play");
+        PlayButton.setDisable(true);
+//        PlayButton.setOnAction(e -> {});
+
+        VBox RightButtons = new VBox(pickBut, randomPicks, clear, PlayButton);
         RightButtons.setSpacing(15);
         RightButtons.setAlignment(Pos.CENTER);
 
