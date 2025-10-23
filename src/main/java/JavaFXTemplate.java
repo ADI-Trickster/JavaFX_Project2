@@ -56,6 +56,34 @@ public class JavaFXTemplate extends Application {
         primaryStage.show();
     }
 
+    public MenuBar getMenuBarStart() {
+        Menu menu = new Menu("Menu ⬇");
+
+        MenuItem Rules = new MenuItem("Rules");
+        MenuItem Odds = new MenuItem("Odds");
+        MenuItem Exit = new MenuItem("Exit");
+
+        menu.getItems().addAll(Rules, Odds, Exit);
+        menuBar =  new MenuBar();
+        menuBar.getMenus().addAll(menu);
+        return menuBar;
+    }
+
+    public MenuBar getMenuBarGame() {
+        Menu menu = new Menu("Menu ⬇");
+
+        MenuItem Rules = new MenuItem("Rules");
+        MenuItem Odds = new MenuItem("Odds");
+        MenuItem Exit = new MenuItem("Exit");
+
+        Menu changeLook = new Menu("Change Look");
+
+        menu.getItems().addAll(Rules, Odds, Exit);
+        menuBar =  new MenuBar();
+        menuBar.getMenus().addAll(menu, changeLook);
+        return menuBar;
+    }
+
     public Scene createStartScene() {
         text.setText("Welcome to Keno Game(Project 2)");
         text.setPrefWidth(250);
@@ -173,6 +201,7 @@ public class JavaFXTemplate extends Application {
 
     public Scene createGameScene() {
 
+        MenuBar menuBarGame =  getMenuBarGame();
         player.playerPicks = new ArrayList<>();
 
         int num = 1;
@@ -227,6 +256,7 @@ public class JavaFXTemplate extends Application {
 
         BorderPane root = new BorderPane();
         root.setStyle("-fx-background-color: skyblue;");
+        root.setTop(menuBarGame);
         root.setCenter(daGrid);
         root.setRight(RightButtons);
 
