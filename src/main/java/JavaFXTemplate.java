@@ -78,18 +78,89 @@ public class JavaFXTemplate extends Application {
         Rules.setOnAction(e -> {
             Stage ruleStage = new Stage();
             TextArea ruleText = new TextArea();
+            ruleText.setWrapText(true);
+            ruleText.setEditable(false);
+            ruleText.setStyle("-fx-background-color: clear; -fx-font-size: 32; -fx-font-weight: bold;");
             ruleStage.setTitle("Keno Rules");
-            ruleText.setText("1. Decide how much to play per draw. Each play costs $1. Play for $2 to double your prize; play for $3 to triple your prize and so on up to $10 per play.\n" +
-                    "Select how many consecutive draws to play. Pick up to 20. Drawings happen every 4 minutes.\n" +
-                    "Select how many numbers(spots) to match from 1 to 10. The number of Spots you choose and the amount you play per draw will determine the amount you could win. See the prize chart to determine the amount you could win with a $1 play.\n" +
-                    "Pick as many numbers as you did Spots. You can select numbers from 1 to 80 or choose Quick Pick and let the computer terminal randomly pick some or all of these numbers for you.\n" +
-                    "Add Multiplier to increase all prizes up to 10X. Multiplier doubles base ticket cost.");
-            VBox layout = new VBox(ruleText);
-            Scene scene = new Scene(layout, 600, 400);
-            ruleStage.setScene(scene);
+            ruleText.setText("1. Decide how much to play per draw. Each play costs $1. Play for $2 to double your prize, $3 to triple, $5 to x5, $10 to x10.\n" +
+                    "2. Select how many consecutive draws to play. Pick up to 4.\n" +
+                    "3. Select how many numbers(spots) to match (1, 4, 8, 10). The number of Spots you choose and the amount you play per draw will determine the amount you could win.\n" +
+                    "4. Pick the same amount of numbers as Spots. You can select numbers from 1 to 80 or choose Quick Pick for a random pick some or all of these numbers for you.\n" +
+                    "5. Add Multiplier to increase all prizes up to 10X. Multiplier doubles base ticket cost.");
+            VBox ruleLayout = new VBox(ruleText);
+            Scene ruleScene = new Scene(ruleLayout, 424, 400);
+            ruleStage.setMaxHeight(424);
+            ruleStage.setScene(ruleScene);
             ruleStage.show();
             }
         );
+
+//        Odds.setOnAction(e -> {
+//            Stage oddStage = new Stage();
+//            TextArea fullOddsText = new TextArea();
+//
+//            fullOddsText.setWrapText(false); // Disable wrapping for alignment
+//            fullOddsText.setEditable(false);
+//
+//            // 1. Use a monospaced font for alignment
+//            fullOddsText.setStyle("-fx-font-family: 'Courier New'; -fx-font-size: 18; -fx-font-weight: bold;");
+//
+//            // Define the header and data. Use spaces for alignment.
+//            String header = "Spots chosen  Odds          with Multiplier\n";
+//            String oddsData =
+//                    "1             1 in 4              x1 - 1 in 2.5\n" +
+//                            "4             1 in 3.86
+//                            "8             1 in 9.77
+//                            "10            1 in 9.05
+//
+//            fullOddsText.setText(header + oddsData);
+//
+//            oddStage.setTitle("Odds to Win");
+//
+//            // Use a VBox to hold the single TextArea
+//            VBox oddLayout = new VBox(fullOddsText);
+//            oddLayout.setAlignment(Pos.CENTER);
+//
+//            // Adjust size to accommodate the width and height of the combined text
+//            Scene oddScene = new Scene(oddLayout, 450, 400);
+//            oddStage.setScene(oddScene);
+//            oddStage.show();
+//        });
+        Odds.setOnAction(e -> {
+                    Stage oddStage = new Stage();
+                    TextArea oddText = new TextArea();
+                    TextArea multText = new TextArea();
+
+                    oddText.setWrapText(true);
+                    oddText.setEditable(false);
+
+                    multText.setWrapText(true);
+                    multText.setEditable(false);
+
+                    oddText.setStyle("-fx-background-color: clear; -fx-font-size: 32; -fx-font-weight: bold;");
+                    multText.setStyle("-fx-background-color: clear; -fx-font-size: 32; -fx-font-weight: bold;");
+
+                    oddStage.setTitle("Odds to Win");
+                    oddText.setText("1 - 1 in 4\n" + "4 - 1 in 3.86\n" + "8 - 1 in 9.77\n" + "10 - 1 in 9.05");
+                    multText.setText("x1 - 1 in 2.5\n" +
+                            "x2 - 1 in 2.35\n" +
+                            "x3 - 1 in 16\n" +
+                            "x4 - 1 in 16\n" +
+                            "x5 - 1 in 26.67\n" +
+                            "x10 - 1 in 80");
+
+                    VBox oddLayout = new VBox(oddText, multText);
+                    oddLayout.setAlignment(Pos.CENTER);
+
+                    Scene oddScene = new Scene(oddLayout, 424, 400);
+//                    oddStage.setMaxHeight(424);
+                    oddStage.setScene(oddScene);
+                    oddStage.show();
+            }
+        );
+
+//        Exit.setOnAction(e -> {
+//        );
 
         //menu.getintems.addAll()
 
