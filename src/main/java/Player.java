@@ -4,9 +4,8 @@ import java.util.Random;
 public class Player {
     private int maxPicks;
     private int totalWinnning;
-
-    ArrayList<Integer> playerPicks;
-    Random random;
+    private ArrayList<Integer> playerPicks;
+    private Random random;
 
     public Player(){
         playerPicks =  new ArrayList<>();
@@ -16,6 +15,10 @@ public class Player {
 
     public ArrayList<Integer> getPlayerPicks(){
         return playerPicks;
+    }
+
+    public ArrayList<Integer> getplayerPicks(){
+        return this.playerPicks;
     }
 
     public void setMaxPicks(int picks){
