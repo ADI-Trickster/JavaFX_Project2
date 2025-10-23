@@ -202,7 +202,8 @@ public class JavaFXTemplate extends Application {
     public Scene createGameScene() {
 
         MenuBar menuBarGame =  getMenuBarGame();
-        player.playerPicks = new ArrayList<>();
+//        player.playerPicks = new ArrayList<>();
+
 
         int num = 1;
         for(int _x = 0; _x < 10; _x++ ){
@@ -264,7 +265,7 @@ public class JavaFXTemplate extends Application {
     }//end of game choice scene
 
     public void handleChoice(int num, Button currButton){
-        if(!player.playerPicks.contains(num)){
+        if(!player.getplayerPicks().contains(num)){
             if(player.getPlayerPickSize() < player.getMaxPicks()) {
                 player.addPlayerChoice(num);
                 currButton.setStyle("-fx-opacity: 0.7;");
