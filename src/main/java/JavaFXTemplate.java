@@ -24,9 +24,6 @@ public class JavaFXTemplate extends Application {
     MenuBar menuBar;
 
     PauseTransition pause = new PauseTransition(Duration.seconds(3));
-
-//    ArrayList<Integer> PlayerNumbers;
-
     Player player = new Player();
 
 	public static void main(String[] args) {
@@ -94,8 +91,7 @@ public class JavaFXTemplate extends Application {
             for(int _y = 0; _y < 8; _y++ ){
                 Button button = new Button(""+ num);
                 button.setMinWidth(40);
-//                button.setDisable(true);
-//                button.setOnAction(e -> );
+                button.setOnAction(e -> {player.addPlayerChoice(num);, button.setDisable(); });
                 daGrid.add(button, _y, _x);
                 num++;
             }
