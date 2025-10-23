@@ -1,6 +1,7 @@
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
 
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -123,74 +124,41 @@ public class JavaFXTemplate extends Application {
             }
         );
 
-//        Odds.setOnAction(e -> {
-//            Stage oddStage = new Stage();
-//            TextArea fullOddsText = new TextArea();
-//
-//            fullOddsText.setWrapText(false); // Disable wrapping for alignment
-//            fullOddsText.setEditable(false);
-//
-//            // 1. Use a monospaced font for alignment
-//            fullOddsText.setStyle("-fx-font-family: 'Courier New'; -fx-font-size: 18; -fx-font-weight: bold;");
-//
-//            // Define the header and data. Use spaces for alignment.
-//            String header = "Spots chosen  Odds          with Multiplier\n";
-//            String oddsData =
-//                    "1             1 in 4              x1 - 1 in 2.5\n" +
-//                            "4             1 in 3.86
-//                            "8             1 in 9.77
-//                            "10            1 in 9.05
-//
-//            fullOddsText.setText(header + oddsData);
-//
-//            oddStage.setTitle("Odds to Win");
-//
-//            // Use a VBox to hold the single TextArea
-//            VBox oddLayout = new VBox(fullOddsText);
-//            oddLayout.setAlignment(Pos.CENTER);
-//
-//            // Adjust size to accommodate the width and height of the combined text
-//            Scene oddScene = new Scene(oddLayout, 450, 400);
-//            oddStage.setScene(oddScene);
-//            oddStage.show();
-//        });
         Odds.setOnAction(e -> {
-                    Stage oddStage = new Stage();
-                    TextArea oddText = new TextArea();
-                    TextArea multText = new TextArea();
+            Stage oddStage = new Stage();
+            TextArea oddText = new TextArea();
+//            TextArea multText = new TextArea();
 
-                    oddText.setWrapText(true);
-                    oddText.setEditable(false);
+            oddText.setWrapText(true);
+            oddText.setEditable(false);
 
-                    multText.setWrapText(true);
-                    multText.setEditable(false);
+//            multText.setWrapText(true);
+//            multText.setEditable(false);
 
-                    oddText.setStyle("-fx-background-color: clear; -fx-font-size: 32; -fx-font-weight: bold;");
-                    multText.setStyle("-fx-background-color: clear; -fx-font-size: 32; -fx-font-weight: bold;");
+            oddText.setStyle("-fx-background-color: clear; -fx-font-size: 32; -fx-font-weight: bold;");
+//            multText.setStyle("-fx-background-color: clear; -fx-font-size: 32; -fx-font-weight: bold;");
 
-                    oddStage.setTitle("Odds to Win");
-                    oddText.setText("1 - 1 in 4\n" + "4 - 1 in 3.86\n" + "8 - 1 in 9.77\n" + "10 - 1 in 9.05");
-                    multText.setText("x1 - 1 in 2.5\n" +
-                            "x2 - 1 in 2.35\n" +
-                            "x3 - 1 in 16\n" +
-                            "x4 - 1 in 16\n" +
-                            "x5 - 1 in 26.67\n" +
-                            "x10 - 1 in 80");
+            oddStage.setTitle("Odds to Win");
+            String oddHeader = "Spots - Odds\n\n";
+            String oddBody = "     1   -   1 in 4\n" + "     4   -   1 in 3.86\n" + "     8   -   1 in 9.77\n" + "   10   -   1 in 9.05";
+            oddText.setText(oddHeader + oddBody);
+//
 
-                    VBox oddLayout = new VBox(oddText, multText);
-                    oddLayout.setAlignment(Pos.CENTER);
-
-                    Scene oddScene = new Scene(oddLayout, 424, 400);
-//                    oddStage.setMaxHeight(424);
-                    oddStage.setScene(oddScene);
-                    oddStage.show();
+            VBox oddLayout = new VBox(oddText);
+            oddLayout.setAlignment(Pos.CENTER);
+            oddText.setPrefWidth(200);
+            oddLayout.setPrefHeight(400);
+            Scene oddScene = new Scene(oddLayout, 424, 400);
+            oddStage.setScene(oddScene);
+            oddStage.show();
             }
         );
 
-//        Exit.setOnAction(e -> {
-//        );
-
-        //menu.getintems.addAll()
+        Exit.setOnAction(e -> {
+//            add pause animation, animation, pause animation then exit
+                Platform.exit();
+            }
+        );
 
         BorderPane pane = new BorderPane();
         pane.setCenter(paneCenter);
