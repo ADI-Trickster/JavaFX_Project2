@@ -107,11 +107,9 @@ public class JavaFXTemplate extends Application {
 //            String header = "Spots chosen  Odds          with Multiplier\n";
 //            String oddsData =
 //                    "1             1 in 4              x1 - 1 in 2.5\n" +
-//                            "4             1 in 3.86                                 x2 - 1 in 2.35\n" +
-//                            "8             1 in 9.77                                 x3 - 1 in 16\n" +
-//                            "10            1 in 9.05                                 x4 - 1 in 16\n" +
-//                            "                                                        x5 - 1 in 26.67\n" +
-//                            "                                                        x10 - 1 in 80\n";
+//                            "4             1 in 3.86
+//                            "8             1 in 9.77
+//                            "10            1 in 9.05
 //
 //            fullOddsText.setText(header + oddsData);
 //
