@@ -2,6 +2,7 @@ import javafx.animation.PauseTransition;
 import javafx.application.Application;
 
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
@@ -175,12 +176,22 @@ public class JavaFXTemplate extends Application {
 
     public void handleHowManyPicks(int num){
         daGrid.setDisable(false);
+        resetButtons();
         player.setMaxPicks(num);
     }
 
     public void resetButtons(){
-
-
+//        ArrayList<Integer> nums = player.getPlayerPicks();
+//        for(int _x = 0; _x < player.getPlayerPickSize(); _x++){
+//            int num = nums.get(_x);
+//            daGrid.getChildren().get(num-1).setStyle("-fx-opacity: 1;");
+//        }
+        for (int i = 0; i < 80; i++) {
+            Node node = daGrid.getChildren().get(i);
+            if (node instanceof Button) {
+                node.setStyle("-fx-opacity: 1;");
+            }
+        }
     }
 
 }//end of class
