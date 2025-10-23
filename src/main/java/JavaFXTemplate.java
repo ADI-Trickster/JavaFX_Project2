@@ -82,6 +82,9 @@ public class JavaFXTemplate extends Application {
                     "Select how many numbers(spots) to match from 1 to 10. The number of Spots you choose and the amount you play per draw will determine the amount you could win. See the prize chart to determine the amount you could win with a $1 play.\n" +
                     "Pick as many numbers as you did Spots. You can select numbers from 1 to 80 or choose Quick Pick and let the computer terminal randomly pick some or all of these numbers for you.\n" +
                     "Add Multiplier to increase all prizes up to 10X. Multiplier doubles base ticket cost.");
+            VBox layout = new VBox(ruleText);
+            Scene scene = new Scene(layout, 600, 400);
+            ruleStage.setScene(scene);
             ruleStage.show();
             }
         );
@@ -105,7 +108,7 @@ public class JavaFXTemplate extends Application {
             for(int _y = 0; _y < 8; _y++ ){
                 Button button = new Button(""+ num);
                 button.setMinWidth(40);
-                button.setOnAction(e -> {player.addPlayerChoice(num);, button.setDisable(); });
+//                button.setOnAction(e -> {player.addPlayerChoice(num); button.setDisable(); });
                 daGrid.add(button, _y, _x);
                 num++;
             }
