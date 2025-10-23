@@ -24,6 +24,7 @@ public class JavaFXTemplate extends Application {
     Button startToGameButton;
     HashMap<String, Scene> sceneMap;
     MenuBar menuBar;
+    GridPane daGrid = new GridPane();
 
     PauseTransition pause = new PauseTransition(Duration.seconds(3));
     Player player = new Player();
@@ -102,13 +103,13 @@ public class JavaFXTemplate extends Application {
 
         player.playerPicks = new ArrayList<>();
 
-        GridPane daGrid = new GridPane();
         int num = 1;
         for(int _x = 0; _x < 10; _x++ ){
             for(int _y = 0; _y < 8; _y++ ){
+                final int currentNum = num;
                 Button button = new Button(""+ num);
                 button.setMinWidth(40);
-//                button.setOnAction(e -> {player.addPlayerChoice(num); button.setDisable(); });
+                button.setOnAction(e -> {Button curr = (Button) e.getSource(); handleChoice(currentNum, curr);});
                 daGrid.add(button, _y, _x);
                 num++;
             }
@@ -116,51 +117,70 @@ public class JavaFXTemplate extends Application {
         daGrid.setDisable(true);
         daGrid.setAlignment(Pos.CENTER_LEFT);
 
-        //button e_> get.soucre
-//
 //        //pick rolls
-        Button pick1Button = new Button("  1 roll");
+        Button pick1Button = new Button("  1 picks");
         pick1Button.setMinWidth(55);
-//        pick1Button.setOnAction(event -> {});
-        Button pick4Button = new Button(" 4 rolls");
+        pick1Button.setOnAction(event -> handleHowManyPicks(1));
+        Button pick4Button = new Button(" 4 picks");
         pick4Button.setMinWidth(55);
-        Button pick8Button = new Button(" 8 rolls");
+        pick4Button.setOnAction(event -> handleHowManyPicks(4));
+        Button pick8Button = new Button(" 8 picks");
         pick8Button.setMinWidth(55);
-        Button pick10Button = new Button("10 rolls");
+        pick8Button.setOnAction(event -> handleHowManyPicks(8));
+        Button pick10Button = new Button("10 picks");
         pick10Button.setMinWidth(55);
+        pick10Button.setOnAction(event -> handleHowManyPicks(10));
 
         VBox pickBut = new VBox(pick1Button, pick4Button, pick8Button, pick10Button);
         pickBut.setSpacing(15);
         pickBut.setAlignment(Pos.CENTER);
 //        //end on pick roles
-//
-//
 
-        Button randomPicks = new Button("random");
-//        randomPicks.setOnAction(e -> {});
+        Button randomPicks = new Button("Quick Fill All");
+        randomPicks.setOnAction(e -> {player.quickPickAll();});
+
+        Button randomFill = new Button("Quick Fill");
+        randomPicks.setOnAction(e -> {player.quickFill();});
 
         Button clear = new Button("clear");
-//        clear.setOnAction(e -> {})
+        clear.setOnAction(e -> {player.clearPicks(); resetButtons();});
 
         Button PlayButton = new Button("Play");
         PlayButton.setDisable(true);
 //        PlayButton.setOnAction(e -> {});
 
-        VBox RightButtons = new VBox(pickBut, randomPicks, clear, PlayButton);
+        VBox RightButtons = new VBox(pickBut, randomFill, randomPicks, clear, PlayButton);
         RightButtons.setSpacing(15);
         RightButtons.setAlignment(Pos.CENTER);
 
         BorderPane root = new BorderPane();
         root.setStyle("-fx-background-color: skyblue;");
         root.setCenter(daGrid);
-
-        root.setRight(RightButtons);//
-
-//        Scene scene = new Scene(root, 700, 700);
-//        primaryStage.setScene(scene);
-//        primaryStage.show();
+        root.setRight(RightButtons);
 
         return new Scene(root, 850, 750);
-    }//end of game choice sceene
+    }//end of game choice scene
+
+    public void handleChoice(int num, Button currButton){
+        if(!player.playerPicks.contains(num)){
+            if(player.getPlayerPickSize() < player.getMaxPicks()) {
+                player.addPlayerChoice(num);
+                currButton.setStyle("-fx-opacity: 0.7;");
+            }
+        }else{
+            player.removePlayerChoice(num);
+            currButton.setStyle("-fx-opacity: 1;");
+        }
+    }
+
+    public void handleHowManyPicks(int num){
+        daGrid.setDisable(false);
+        player.setMaxPicks(num);
+    }
+
+    public void resetButtons(){
+
+
+    }
 
 }//end of class
