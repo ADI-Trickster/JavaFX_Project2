@@ -5,8 +5,10 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -67,13 +69,25 @@ public class JavaFXTemplate extends Application {
 
         Menu menu = new Menu("Menu ⬇");
 
-        Menu Rules = new Menu("Rules");
-        Menu Odds = new Menu("Odds");
-        Menu Exit = new Menu("Exit");
+        MenuItem Rules = new MenuItem("Rules");
+        MenuItem Odds = new MenuItem("Odds");
+        MenuItem Exit = new MenuItem("Exit");
 
         menu.getItems().addAll(Rules, Odds, Exit);
         menuBar.getMenus().addAll(menu);
 
+        Rules.setOnAction(e -> {
+            Stage ruleStage = new Stage();
+            TextArea ruleText = new TextArea();
+            ruleStage.setTitle("Keno Rules");
+            ruleText.setText("1. Decide how much to play per draw. Each play costs $1. Play for $2 to double your prize; play for $3 to triple your prize and so on up to $10 per play.\n" +
+                    "Select how many consecutive draws to play. Pick up to 20. Drawings happen every 4 minutes.\n" +
+                    "Select how many numbers(spots) to match from 1 to 10. The number of Spots you choose and the amount you play per draw will determine the amount you could win. See the prize chart to determine the amount you could win with a $1 play.\n" +
+                    "Pick as many numbers as you did Spots. You can select numbers from 1 to 80 or choose Quick Pick and let the computer terminal randomly pick some or all of these numbers for you.\n" +
+                    "Add Multiplier to increase all prizes up to 10X. Multiplier doubles base ticket cost.");
+            ruleStage.show();
+            }
+        );
 
         //menu.getintems.addAll()
 
