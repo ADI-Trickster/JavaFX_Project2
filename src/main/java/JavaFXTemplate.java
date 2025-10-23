@@ -105,7 +105,7 @@ public class JavaFXTemplate extends Application {
             for(int _y = 0; _y < 8; _y++ ){
                 Button button = new Button(""+ num);
                 button.setMinWidth(40);
-                button.setOnAction(e -> {player.addPlayerChoice(num);, button.setDisable(); });
+//                button.setOnAction(e -> {player.addPlayerChoice(num); button.setDisable(false); });
                 daGrid.add(button, _y, _x);
                 num++;
             }
@@ -113,7 +113,7 @@ public class JavaFXTemplate extends Application {
         daGrid.setDisable(true);
         daGrid.setAlignment(Pos.CENTER_LEFT);
 
-        //button e_> get.soucre
+        //button e_> get.source
 //
 //        //pick rolls
         Button pick1Button = new Button("  1 roll");
@@ -158,6 +158,6 @@ public class JavaFXTemplate extends Application {
 //        primaryStage.show();
 
         return new Scene(root, 850, 750);
-    }//end of game choice sceene
+    }//end of game choice scene
 
 }//end of class
