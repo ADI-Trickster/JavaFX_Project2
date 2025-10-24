@@ -23,6 +23,7 @@ public class JavaFXTemplate extends Application {
     HashMap<String, Scene> sceneMap;
     MenuBar menuBar;
     GridPane daGrid = new GridPane();
+    Button PlayButton;
 
     PauseTransition pause = new PauseTransition(Duration.seconds(3));
     Player player = new Player();
@@ -42,12 +43,14 @@ public class JavaFXTemplate extends Application {
         sceneMap = new HashMap<>();
         text = new TextField();
         menuBar =  new MenuBar();
+        PlayButton = new Button("Play");
 
         startToGameButton.setOnAction(e -> primaryStage.setScene(sceneMap.get("game")));
-
+        PlayButton.setOnAction(e -> {primaryStage.setScene(sceneMap.get("drawing"));});
         //two scenes returned from two methods; put in hashmap
         sceneMap.put("start", createStartScene());
         sceneMap.put("game", createGameScene());
+        sceneMap.put("drawing", createDrawingScene());
 
         primaryStage.setScene(sceneMap.get("start"));
         primaryStage.show();
@@ -76,7 +79,6 @@ public class JavaFXTemplate extends Application {
 
         MenuBar menuBarGame =  new MenuBarStart.MenuBarGame();
 //        player.playerPicks = new ArrayList<>();
-
 
         int num = 1;
         for(int _x = 0; _x < 10; _x++ ){
@@ -119,10 +121,8 @@ public class JavaFXTemplate extends Application {
 
         Button clear = new Button("clear");
         clear.setOnAction(e -> {player.clearPicks(); resetButtons();});
-
-        Button PlayButton = new Button("Play");
         PlayButton.setDisable(true);
-//        PlayButton.setOnAction(e -> {});
+//        PlayButton.setOnAction(e -> {primaryStage.setScene(sceneMap.get("game"))});
 
         VBox RightButtons = new VBox(pickBut, randomFill, randomPicks, clear, PlayButton);
         RightButtons.setSpacing(15);
@@ -137,12 +137,22 @@ public class JavaFXTemplate extends Application {
         return new Scene(root, 850, 750);
     }//end of game choice scene
 
+    public Scene createDrawingScene() {
+        BorderPane root = new BorderPane();
+        root.setStyle("-fx-background-color: red;");
+        return new Scene(root, 850, 750);
+    }
+
     public void handleChoice(int num, Button currButton){
         if(!player.getplayerPicks().contains(num)){
             if(player.getPlayerPickSize() < player.getMaxPicks()) {
                 player.addPlayerChoice(num);
                 currButton.setStyle("-fx-opacity: 0.7;");
             }
+            if(player.getPlayerPickSize() >= player.getMaxPicks()) {
+                PlayButton.setDisable(false);
+            }
+
         }else{
             player.removePlayerChoice(num);
             currButton.setStyle("-fx-opacity: 1;");

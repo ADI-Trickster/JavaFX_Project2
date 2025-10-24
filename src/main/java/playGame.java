@@ -21,7 +21,7 @@ public class playGame{
     }
 
     public void draw20Numbers(){
-        for(int i = 0; i < 20; i++){
+        while (drawnNumbers.size() <= 20){
             addRandomNumber();
         }
     }
