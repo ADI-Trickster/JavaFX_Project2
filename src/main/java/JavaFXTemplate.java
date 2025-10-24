@@ -1,16 +1,13 @@
+import kenoMenu.MenuBarStart;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
-
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -19,7 +16,6 @@ import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
 
 public class JavaFXTemplate extends Application {
     TextField text;
@@ -57,34 +53,6 @@ public class JavaFXTemplate extends Application {
         primaryStage.show();
     }
 
-    public MenuBar getMenuBarStart() {
-        Menu menu = new Menu("Menu ⬇");
-
-        MenuItem Rules = new MenuItem("Rules");
-        MenuItem Odds = new MenuItem("Odds");
-        MenuItem Exit = new MenuItem("Exit");
-
-        menu.getItems().addAll(Rules, Odds, Exit);
-        menuBar =  new MenuBar();
-        menuBar.getMenus().addAll(menu);
-        return menuBar;
-    }
-
-    public MenuBar getMenuBarGame() {
-        Menu menu = new Menu("Menu ⬇");
-
-        MenuItem Rules = new MenuItem("Rules");
-        MenuItem Odds = new MenuItem("Odds");
-        MenuItem Exit = new MenuItem("Exit");
-
-        Menu changeLook = new Menu("Change Look");
-
-        menu.getItems().addAll(Rules, Odds, Exit);
-        menuBar =  new MenuBar();
-        menuBar.getMenus().addAll(menu, changeLook);
-        return menuBar;
-    }
-
     public Scene createStartScene() {
         text.setText("Welcome to Keno Game(Project 2)");
         text.setPrefWidth(250);
@@ -95,81 +63,18 @@ public class JavaFXTemplate extends Application {
         VBox paneCenter = new VBox(10, text , startToGameButton);
         paneCenter.setAlignment(Pos.CENTER);
 
-        Menu menu = new Menu("Menu ⬇");
-
-        MenuItem Rules = new MenuItem("Rules");
-        MenuItem Odds = new MenuItem("Odds");
-        MenuItem Exit = new MenuItem("Exit");
-
-        menu.getItems().addAll(Rules, Odds, Exit);
-        menuBar.getMenus().addAll(menu);
-
-        Rules.setOnAction(e -> {
-            Stage ruleStage = new Stage();
-            TextArea ruleText = new TextArea();
-            ruleText.setWrapText(true);
-            ruleText.setEditable(false);
-            ruleText.setStyle("-fx-background-color: clear; -fx-font-size: 32; -fx-font-weight: bold;");
-            ruleStage.setTitle("Keno Rules");
-            ruleText.setText("1. Decide how much to play per draw. Each play costs $1. Play for $2 to double your prize, $3 to triple, $5 to x5, $10 to x10.\n" +
-                    "2. Select how many consecutive draws to play. Pick up to 4.\n" +
-                    "3. Select how many numbers(spots) to match (1, 4, 8, 10). The number of Spots you choose and the amount you play per draw will determine the amount you could win.\n" +
-                    "4. Pick the same amount of numbers as Spots. You can select numbers from 1 to 80 or choose Quick Pick for a random pick some or all of these numbers for you.\n" +
-                    "5. Add Multiplier to increase all prizes up to 10X. Multiplier doubles base ticket cost.");
-            VBox ruleLayout = new VBox(ruleText);
-            Scene ruleScene = new Scene(ruleLayout, 424, 400);
-            ruleStage.setMaxHeight(424);
-            ruleStage.setScene(ruleScene);
-            ruleStage.show();
-            }
-        );
-
-        Odds.setOnAction(e -> {
-            Stage oddStage = new Stage();
-            TextArea oddText = new TextArea();
-//            TextArea multText = new TextArea();
-
-            oddText.setWrapText(true);
-            oddText.setEditable(false);
-
-//            multText.setWrapText(true);
-//            multText.setEditable(false);
-
-            oddText.setStyle("-fx-background-color: clear; -fx-font-size: 32; -fx-font-weight: bold;");
-//            multText.setStyle("-fx-background-color: clear; -fx-font-size: 32; -fx-font-weight: bold;");
-
-            oddStage.setTitle("Odds to Win");
-            String oddHeader = "Spots - Odds\n\n";
-            String oddBody = "     1   -   1 in 4\n" + "     4   -   1 in 3.86\n" + "     8   -   1 in 9.77\n" + "   10   -   1 in 9.05";
-            oddText.setText(oddHeader + oddBody);
-//
-
-            VBox oddLayout = new VBox(oddText);
-            oddLayout.setAlignment(Pos.CENTER);
-            oddText.setPrefWidth(200);
-            oddLayout.setPrefHeight(400);
-            Scene oddScene = new Scene(oddLayout, 424, 400);
-            oddStage.setScene(oddScene);
-            oddStage.show();
-            }
-        );
-
-        Exit.setOnAction(e -> {
-//            add pause animation, animation, pause animation then exit
-                Platform.exit();
-            }
-        );
+        MenuBar menuBarStart = new MenuBarStart();
 
         BorderPane pane = new BorderPane();
         pane.setCenter(paneCenter);
-        pane.setTop(menuBar);
+        pane.setTop(menuBarStart);
         pane.setStyle("-fx-background-color: skyblue;");
         return new Scene(pane, 850, 750);
     }
 
     public Scene createGameScene() {
 
-        MenuBar menuBarGame =  getMenuBarGame();
+        MenuBar menuBarGame =  new MenuBarStart.MenuBarGame();
 //        player.playerPicks = new ArrayList<>();
 
 
