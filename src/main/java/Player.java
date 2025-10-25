@@ -3,13 +3,13 @@ import java.util.Random;
 
 public class Player {
     private int maxPicks;
-    private int totalWinnning;
+    private int totalWinning;
     private ArrayList<Integer> playerPicks;
     private Random random;
 
     public Player(){
         playerPicks =  new ArrayList<>();
-        totalWinnning = 0;
+        totalWinning = 0;
         maxPicks = 0;
     }
 
@@ -45,11 +45,11 @@ public class Player {
     }
 
     public void addWinnings(int wonFromDraw){
-        this.totalWinnning+=wonFromDraw;
+        this.totalWinning+=wonFromDraw;
     }
 
-    public int getTotalWinnning(){
-        return this.totalWinnning;
+    public int getTotalWinning(){
+        return this.totalWinning;
     }
 
     public void quickPickAll(){
@@ -81,7 +81,7 @@ public class Player {
 
     public void resetPlayer(){
         playerPicks.clear();
-        this.totalWinnning = 0;
+        this.totalWinning = 0;
         this.maxPicks = 0;
     }
 

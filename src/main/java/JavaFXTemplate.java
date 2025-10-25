@@ -1,3 +1,4 @@
+import javafx.scene.control.*;
 import kenoMenu.MenuBarStart;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
@@ -5,9 +6,6 @@ import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -46,10 +44,11 @@ public class JavaFXTemplate extends Application {
         PlayButton = new Button("Play");
 
         startToGameButton.setOnAction(e -> primaryStage.setScene(sceneMap.get("game")));
-        PlayButton.setOnAction(e -> {primaryStage.setScene(sceneMap.get("drawing"));});
+        PlayButton.setOnAction(e -> {primaryStage.setScene(sceneMap.get("result"));});
         //two scenes returned from two methods; put in hashmap
         sceneMap.put("start", createStartScene());
         sceneMap.put("game", createGameScene());
+        sceneMap.put("result", resultScene());
         sceneMap.put("drawing", createDrawingScene());
 
         primaryStage.setScene(sceneMap.get("start"));
@@ -136,6 +135,28 @@ public class JavaFXTemplate extends Application {
 
         return new Scene(root, 850, 750);
     }//end of game choice scene
+
+    public  Scene resultScene() {
+        BorderPane pane = new BorderPane();
+        MenuBar menuBarGame = new MenuBarStart.MenuBarGame();
+        // textbox for results of game button bottom center, play again bringing them back to start
+        Label resultLabel = new Label("Results\n$" + player.getTotalWinning());
+        resultLabel.setStyle("-fx-background-color: clear; -fx-font-size: 32; -fx-font-weight: bold; -fx-text-alignment: center;");
+
+        Button playAgain = new Button("Play Again");
+        playAgain.setPrefSize(200,100);
+//        playAgain.setOnAction(e -> {
+                    // switch to start screen
+//                });
+        VBox centered = new VBox(40, resultLabel, playAgain);
+        centered.setAlignment(Pos.CENTER);
+
+        pane.setTop(menuBarGame);
+        pane.setCenter(centered);
+        BorderPane.setAlignment(playAgain, Pos.CENTER);
+        pane.setStyle("-fx-background-color: skyblue;");
+        return new Scene(pane, 850, 750);
+    }
 
     public Scene createDrawingScene() {
         BorderPane root = new BorderPane();
