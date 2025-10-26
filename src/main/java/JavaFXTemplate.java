@@ -168,7 +168,7 @@ public class JavaFXTemplate extends Application {
     }
 
     public void handleChoice(int num, Button currButton){
-        if(!player.getplayerPicks().contains(num)){
+        if(!player.getPlayerPicks().contains(num)){
             if(player.getPlayerPickSize() < player.getMaxPicks()) {
                 player.addPlayerChoice(num);
                 currButton.setStyle("-fx-opacity: 0.7; -fx-background-color: green;");
@@ -188,9 +188,9 @@ public class JavaFXTemplate extends Application {
     public void handleHowManyPicks(int num){
         daGrid.setDisable(false);
         resetButtons();
-        System.out.println("Player picks: " + player.getplayerPicks());
+        System.out.println("Player picks: " + player.getPlayerPicks());
         player.setMaxPicks(num);
-        if(player.getplayerPicks().size() > player.getMaxPicks()) {
+        if(player.getPlayerPicks().size() > player.getMaxPicks()) {
             player.clearPicks();
         }
     }
@@ -209,13 +209,13 @@ public class JavaFXTemplate extends Application {
 
     public void handleRQuickFillLook(){
 //        player.quickFill();
-        System.out.println("Player picks: " + player.getplayerPicks());
-//        System.out.println(player.getplayerPicks());
+        System.out.println("Player picks: " + player.getPlayerPicks());
+//        System.out.println(player.getPlayerPicks());
         resetButtons();
         for (int i = 0; i < 80; i++) {
             Node node = daGrid.getChildren().get(i);
             if (node instanceof Button){
-                if(player.getplayerPicks().contains(i+1)){
+                if(player.getPlayerPicks().contains(i+1)){
                     node.setStyle("-fx-opacity: 0.7;  -fx-background-color: green;");
                 }
 //                else{
