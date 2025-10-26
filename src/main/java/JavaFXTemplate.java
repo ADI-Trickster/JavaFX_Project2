@@ -2,7 +2,6 @@ import javafx.scene.control.*;
 import kenoMenu.MenuBarStart;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -12,7 +11,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class JavaFXTemplate extends Application {
@@ -22,6 +20,7 @@ public class JavaFXTemplate extends Application {
     MenuBar menuBar;
     GridPane daGrid = new GridPane();
     Button PlayButton;
+    Button playAgain;
 
     PauseTransition pause = new PauseTransition(Duration.seconds(3));
     Player player = new Player();
@@ -42,10 +41,12 @@ public class JavaFXTemplate extends Application {
         text = new TextField();
         menuBar =  new MenuBar();
         PlayButton = new Button("Play");
+        playAgain = new Button("Play Again");
 
         startToGameButton.setOnAction(e -> primaryStage.setScene(sceneMap.get("game")));
-        PlayButton.setOnAction(e -> {primaryStage.setScene(sceneMap.get("result"));});
-        //two scenes returned from two methods; put in hashmap
+        PlayButton.setOnAction(e -> {primaryStage.setScene(sceneMap.get("result"));});//switch to drawing then results
+        playAgain.setOnAction(e -> {primaryStage.setScene(sceneMap.get("start")); resetBoardForPlayAgain();});
+        //# of scenes returned from # of methods; put in hashmap
         sceneMap.put("start", createStartScene());
         sceneMap.put("game", createGameScene());
         sceneMap.put("result", resultScene());
@@ -77,7 +78,6 @@ public class JavaFXTemplate extends Application {
     public Scene createGameScene() {
 
         MenuBar menuBarGame =  new MenuBarStart.MenuBarGame();
-//        player.playerPicks = new ArrayList<>();
 
         int num = 1;
         for(int _x = 0; _x < 10; _x++ ){
@@ -97,12 +97,15 @@ public class JavaFXTemplate extends Application {
         Button pick1Button = new Button("  1 picks");
         pick1Button.setMinWidth(55);
         pick1Button.setOnAction(event -> handleHowManyPicks(1));
+
         Button pick4Button = new Button(" 4 picks");
         pick4Button.setMinWidth(55);
         pick4Button.setOnAction(event -> handleHowManyPicks(4));
+
         Button pick8Button = new Button(" 8 picks");
         pick8Button.setMinWidth(55);
         pick8Button.setOnAction(event -> handleHowManyPicks(8));
+
         Button pick10Button = new Button("10 picks");
         pick10Button.setMinWidth(55);
         pick10Button.setOnAction(event -> handleHowManyPicks(10));
@@ -113,10 +116,10 @@ public class JavaFXTemplate extends Application {
 //        //end on pick roles
 
         Button randomPicks = new Button("Quick Fill All");
-        randomPicks.setOnAction(e -> {player.quickPickAll();});
+        randomPicks.setOnAction(e -> {player.quickPickAll(); handleRQuickFillLook();});
 
         Button randomFill = new Button("Quick Fill");
-        randomPicks.setOnAction(e -> {player.quickFill();});
+        randomFill.setOnAction(e -> {player.quickFill(); handleRQuickFillLook();});
 
         Button clear = new Button("clear");
         clear.setOnAction(e -> {player.clearPicks(); resetButtons();});
@@ -143,7 +146,7 @@ public class JavaFXTemplate extends Application {
         Label resultLabel = new Label("Results\n$" + player.getTotalWinning());
         resultLabel.setStyle("-fx-background-color: clear; -fx-font-size: 32; -fx-font-weight: bold; -fx-text-alignment: center;");
 
-        Button playAgain = new Button("Play Again");
+//        Button
         playAgain.setPrefSize(200,100);
 //        playAgain.setOnAction(e -> {
                     // switch to start screen
@@ -168,7 +171,7 @@ public class JavaFXTemplate extends Application {
         if(!player.getplayerPicks().contains(num)){
             if(player.getPlayerPickSize() < player.getMaxPicks()) {
                 player.addPlayerChoice(num);
-                currButton.setStyle("-fx-opacity: 0.7;");
+                currButton.setStyle("-fx-opacity: 0.7; -fx-background-color: green;");
             }
             if(player.getPlayerPickSize() >= player.getMaxPicks()) {
                 PlayButton.setDisable(false);
@@ -176,28 +179,57 @@ public class JavaFXTemplate extends Application {
 
         }else{
             player.removePlayerChoice(num);
+            currButton.setStyle("");
             currButton.setStyle("-fx-opacity: 1;");
+            PlayButton.setDisable(true);
         }
     }
 
     public void handleHowManyPicks(int num){
         daGrid.setDisable(false);
         resetButtons();
+        System.out.println("Player picks: " + player.getplayerPicks());
         player.setMaxPicks(num);
-    }
-
-    public void resetButtons(){
-//        ArrayList<Integer> nums = player.getPlayerPicks();
-//        for(int _x = 0; _x < player.getPlayerPickSize(); _x++){
-//            int num = nums.get(_x);
-//            daGrid.getChildren().get(num-1).setStyle("-fx-opacity: 1;");
-//        }
-        for (int i = 0; i < 80; i++) {
-            Node node = daGrid.getChildren().get(i);
-            if (node instanceof Button) {
-                node.setStyle("-fx-opacity: 1;");
-            }
+        if(player.getplayerPicks().size() > player.getMaxPicks()) {
+            player.clearPicks();
         }
     }
 
+    public void resetButtons(){
+        for (int i = 0; i < 80; i++) {
+            Node node = daGrid.getChildren().get(i);
+            if (node instanceof Button) {
+                node.setStyle("");
+                node.setStyle("-fx-opacity: 1;");
+            }
+        }
+        PlayButton.setDisable(true);
+        System.out.println("buttons reset");
+    }
+
+    public void handleRQuickFillLook(){
+//        player.quickFill();
+        System.out.println("Player picks: " + player.getplayerPicks());
+//        System.out.println(player.getplayerPicks());
+        resetButtons();
+        for (int i = 0; i < 80; i++) {
+            Node node = daGrid.getChildren().get(i);
+            if (node instanceof Button){
+                if(player.getplayerPicks().contains(i+1)){
+                    node.setStyle("-fx-opacity: 0.7;  -fx-background-color: green;");
+                }
+//                else{
+//                    node.setStyle("-fx-opacity: 1; -fx-background-color: lightgray;");
+//                }
+            }
+        }
+        PlayButton.setDisable(false);
+    }
+
+    public void resetBoardForPlayAgain(){
+        player.clearPicks();
+        resetButtons();
+        daGrid.setDisable(true);
+        PlayButton.setDisable(true);
+    }
 }//end of class
