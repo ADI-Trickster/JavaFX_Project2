@@ -11,6 +11,7 @@ public class Player {
         playerPicks =  new ArrayList<>();
         totalWinning = 0;
         maxPicks = 0;
+        random = new Random();
     }
 
     public ArrayList<Integer> getPlayerPicks(){
