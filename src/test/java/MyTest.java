@@ -11,6 +11,13 @@ import java.util.ArrayList;
 
 class MyTest {
 
+    Player player;
+
+    @BeforeEach
+    void setUp() {
+        player  = new Player();
+
+    }
 	@Test
 	void test() {
 
