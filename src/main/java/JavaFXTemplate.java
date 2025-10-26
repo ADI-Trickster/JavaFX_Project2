@@ -77,8 +77,6 @@ public class JavaFXTemplate extends Application {
 
     public Scene createGameScene() {
 
-        MenuBar menuBarGame =  new MenuBarStart.MenuBarGame();
-
         int num = 1;
         for(int _x = 0; _x < 10; _x++ ){
             for(int _y = 0; _y < 8; _y++ ){
@@ -131,6 +129,7 @@ public class JavaFXTemplate extends Application {
         RightButtons.setAlignment(Pos.CENTER);
 
         BorderPane root = new BorderPane();
+        MenuBar menuBarGame =  new MenuBarStart.MenuBarGame(root);
         root.setStyle("-fx-background-color: skyblue;");
         root.setTop(menuBarGame);
         root.setCenter(daGrid);
@@ -141,12 +140,9 @@ public class JavaFXTemplate extends Application {
 
     public  Scene resultScene() {
         BorderPane pane = new BorderPane();
-        MenuBar menuBarGame = new MenuBarStart.MenuBarGame();
-        // textbox for results of game button bottom center, play again bringing them back to start
+        MenuBar menuBarGame = new MenuBarStart.MenuBarGame(pane);
         Label resultLabel = new Label("Results\n$" + player.getTotalWinning());
         resultLabel.setStyle("-fx-background-color: clear; -fx-font-size: 32; -fx-font-weight: bold; -fx-text-alignment: center;");
-
-//        Button
         playAgain.setPrefSize(200,100);
         VBox centered = new VBox(40, resultLabel, playAgain);
         centered.setAlignment(Pos.CENTER);

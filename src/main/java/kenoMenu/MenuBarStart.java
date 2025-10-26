@@ -10,6 +10,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.Random;
+import javafx.scene.layout.Region;
 
 public class MenuBarStart extends MenuBar {
     public MenuBarStart() {
@@ -79,17 +80,29 @@ public class MenuBarStart extends MenuBar {
     }
 
     public static class MenuBarGame extends MenuBarStart {
-        private Random random = new Random();
-        private String[] colors = {};
-        private String[] fonts = {};
-        private String[] imgs = {};
-        public MenuBarGame() {
+        private final Random random = new Random();
+        private final String[] colors = {"blue", "yellow", "orange",
+                "purple", "pink", "cyan", "magenta", "lime",
+                "gold", "silver", "teal", "navy", "maroon",
+                "olive", "aqua", "indigo", "salmon", "chocolate"};
+        private final String[] fonts = {"Arial", "Verdana", "Tahoma", "Times New Roman", "Courier New",
+                "Georgia", "Garamond", "Impact", "Trebuchet MS", "Lucida Console",
+                "Comic Sans MS", "Arial Black", "Century Gothic", "Palatino Linotype", "Calibri",
+                "Roboto", "Open Sans", "Helvetica", "SansSerif", "Serif"};
+        private final String[] imgs = {}; // future use
+
+        public MenuBarGame(Region root) {
             super();
             Menu menu = this.getMenus().get(0);
             MenuItem changeLook = new MenuItem("Change Look");
-//                    changeLook.setOnAction(e -> );
 
-            //changed to make exit last in the menu
+            changeLook.setOnAction(e -> {
+                String color = colors[random.nextInt(colors.length)];
+                String font = fonts[random.nextInt(fonts.length)];
+                root.setStyle("-fx-background-color: " + color + "; -fx-font-family: '" + font + "';");
+//                System.out.println("Changed look to color: " + color + ", font: " + font);
+            });
+
             int exitIndex = menu.getItems().size() - 1;
             menu.getItems().add(exitIndex, changeLook);
         }
