@@ -148,9 +148,6 @@ public class JavaFXTemplate extends Application {
 
 //        Button
         playAgain.setPrefSize(200,100);
-//        playAgain.setOnAction(e -> {
-                    // switch to start screen
-//                });
         VBox centered = new VBox(40, resultLabel, playAgain);
         centered.setAlignment(Pos.CENTER);
 
