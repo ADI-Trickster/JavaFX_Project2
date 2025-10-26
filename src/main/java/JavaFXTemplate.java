@@ -44,7 +44,7 @@ public class JavaFXTemplate extends Application {
         playAgain = new Button("Play Again");
 
         startToGameButton.setOnAction(e -> primaryStage.setScene(sceneMap.get("game")));
-        PlayButton.setOnAction(e -> {primaryStage.setScene(sceneMap.get("result"));});//switch to drawing then results
+        PlayButton.setOnAction(e -> primaryStage.setScene(sceneMap.get("result")));//switch to drawing then results
         playAgain.setOnAction(e -> {primaryStage.setScene(sceneMap.get("start")); resetBoardForPlayAgain();});
         //# of scenes returned from # of methods; put in hashmap
         sceneMap.put("start", createStartScene());
