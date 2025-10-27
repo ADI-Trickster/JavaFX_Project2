@@ -14,7 +14,7 @@ public class playGame{
         return drawnNumbers;
     }
 
-    private void addRandomNumber(){
+    public void addRandomNumber(){
         int ranNum = random.nextInt(80) + 1;
         if(!this.drawnNumbers.contains(ranNum)){
             this.drawnNumbers.add(ranNum);

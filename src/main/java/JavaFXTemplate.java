@@ -1,3 +1,4 @@
+import javafx.animation.FadeTransition;
 import javafx.scene.control.*;
 import kenoMenu.MenuBarStart;
 import javafx.animation.PauseTransition;

@@ -172,32 +172,32 @@ class MyTest {
     }
 
     @Test
-    void addRandomNumberTest(){
+    void addRandomNumberTest() {
         //in range
         gameInstance.getDrawnNumbers().clear();
         gameInstance.addRandomNumber();
 
         assertEquals(1, gameInstance.getDrawnNumbers().size(), "Should have exactly one number drawn.");
+    }
+    @Test
+    void addRandomNumberInRangeTest() {
+        gameInstance.getDrawnNumbers().clear();
+        gameInstance.addRandomNumber();
         int drawnNumber = gameInstance.getDrawnNumbers().get(0);
-
         assertTrue(drawnNumber >= 1, "Drawn number is outside the required minimum range (1).");
         assertTrue(drawnNumber <= 80, "Drawn number is outside the required maximum range (80).");
     }
 
     @Test
     void clearPicksTest() {
-        // Setup: Add numbers to ensure the list is not empty
-        player.setMaxPicks(5);
+        player.setMaxPicks(4);
         player.addPlayerChoice(10);
         player.addPlayerChoice(20);
 
-        // Verify setup size
         assertEquals(2, player.getPlayerPickSize(), "Setup failed: PlayerPicks should have 2 numbers.");
 
-        // Action: Clear the picks
         player.clearPicks();
 
-        // Assertions: Verify the list is empty and the size is 0
         assertEquals(0, player.getPlayerPickSize(),
                 "clearPicks should reset the pick size to 0.");
         assertTrue(player.getPlayerPicks().isEmpty(),
@@ -208,30 +208,23 @@ class MyTest {
     void setAndGetMaxPicksTest() {
         final int expectedMax = 8;
 
-        // Set the value
         player.setMaxPicks(expectedMax);
-
-        // Verify the getter returns the correct value
         assertEquals(expectedMax, player.getMaxPicks(),
                 "getMaxPicks should return the value set by setMaxPicks.");
     }
 
     @Test
     void getPlayerPickSizeTest() {
-        // Initial check
         assertEquals(0, player.getPlayerPickSize(),
                 "Initial size should be 0.");
 
-        // Action: Add two picks
-        player.setMaxPicks(5); // Set maxPicks so adding is allowed
+        player.setMaxPicks(4);
         player.addPlayerChoice(1);
         player.addPlayerChoice(2);
 
-        // Verify size increments
         assertEquals(2, player.getPlayerPickSize(),
                 "Size should be 2 after adding two picks.");
 
-        // Action: Remove one pick
         player.removePlayerChoice(1);
 
         // Verify size decrements
@@ -244,10 +237,9 @@ class MyTest {
         ArrayList<Integer> playerPicks = new ArrayList<>();
         playerPicks.add(5);
         playerPicks.add(10);
-        playerPicks.add(15); // This will be a match
-        playerPicks.add(25); // This will be a match
+        playerPicks.add(15); //This willmatch
+        playerPicks.add(25); // This will  match
 
-        //make drawn # to test match
         gameInstance.getDrawnNumbers().clear();
         gameInstance.getDrawnNumbers().add(1);
         gameInstance.getDrawnNumbers().add(15); // Match
@@ -256,14 +248,11 @@ class MyTest {
         gameInstance.getDrawnNumbers().add(50);
 
         for(int i = 0; gameInstance.getDrawnNumbers().size() < 20; i++) {
-            //fill rest
             gameInstance.getDrawnNumbers().add(60 + i);
         }
 
-        // 3. Action: Get the matches
         ArrayList<Integer> matchedNumbers = gameInstance.matchNumbers(playerPicks);
 
-        // 4. Assertions
         assertEquals(2, matchedNumbers.size(), "wrong # of matched numbers.");
         assertTrue(matchedNumbers.contains(15), "15 does not match when should.");
         assertTrue(matchedNumbers.contains(25), "25 does not match when should.");
@@ -289,11 +278,9 @@ class MyTest {
     }
     @Test
     void menuBarStartNotEmptyTest() {
-        // Test the base menu (used for the start screen)
         MenuBarStart menuBar = new MenuBarStart();
         Menu mainMenu = getMainMenu(menuBar);
 
-        // 1. Verify the number of top-level menus and items
         assertEquals(1, menuBar.getMenus().size(), "Dropdown Menu exists");
         assertEquals(3, mainMenu.getItems().size(), "Rules, Odds, Exit options exist");
     }
@@ -307,10 +294,67 @@ class MyTest {
         assertEquals("Odds", mainMenu.getItems().get(1).getText());
         assertEquals("Exit", mainMenu.getItems().get(2).getText());
     }
-    //matches per each picks
-    //total winning don't set back to 0
 
-    //clear removes all numbers
+    @Test
+    void quickFillDoesNotExceedMaxTest() {
+        player.setMaxPicks(4);
+        player.addPlayerChoice(10);
+
+        player.quickFill();
+        assertEquals(4, player.getPlayerPickSize(), "Should fill exactly 4 picks");
+    }
+
+    @Test
+    void quickFillDoesNotExceedMax2Test() {
+        player.setMaxPicks(4);
+        player.addPlayerChoice(10);
+
+        player.quickFill();
+        assertEquals(4, player.getPlayerPickSize(), "Should fill exactly 4 picks");
+
+        player.setMaxPicks(10);
+        player.quickFill();
+        assertEquals(10, player.getPlayerPickSize(), "Should fill exactly 10 picks");
+    }
+
+    @Test
+    void quickFillDoesNotRemoveExistingTest() {
+        player.setMaxPicks(4);
+        player.addPlayerChoice(7);
+        player.quickFill();
+        assertTrue(player.getPlayerPicks().contains(7), "Existing pick should remain");
+    }
+
+    @Test
+    void quickFillDoesNotRemoveExisting2Test() {
+        player.setMaxPicks(4);
+        player.addPlayerChoice(7);
+        player.addPlayerChoice(15);
+        player.quickFill();
+        player.setMaxPicks(8);
+        player.quickFill();
+        assertTrue(player.getPlayerPicks().contains(7), "Existing pick should remain");
+        assertTrue(player.getPlayerPicks().contains(15), "Existing pick should remain");
+    }
+
+    @Test
+    void resetAfterCompleteRoundTest() {
+        player.setMaxPicks(4);
+        player.quickPickAll();
+        gameInstance.draw20Numbers();
+        player.addWinnings(200);
+
+        player.resetPlayer();
+        assertEquals(0, player.getPlayerPickSize());
+        assertEquals(0, player.getTotalWinning());
+    }
+
+    @Test
+    void getMaxPicksTest() {
+        player.setMaxPicks(8);
+        assertEquals(8, player.getMaxPicks(), "getMaxPicks should return the value set by setMaxPicks.");
+    }
+
     }//end of test
 
 
