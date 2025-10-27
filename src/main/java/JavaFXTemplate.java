@@ -1,3 +1,4 @@
+import javafx.animation.FadeTransition;
 import javafx.scene.control.*;
 import kenoMenu.MenuBarStart;
 import javafx.animation.PauseTransition;
@@ -10,7 +11,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import javafx.scene.control.ComboBox;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,11 +29,42 @@ public class JavaFXTemplate extends Application {
     Button randomFill;
     Button clear;
 
-
     PauseTransition pause = new PauseTransition(Duration.seconds(3));
     Player player = new Player();
     ArrayList<Integer>  playNums;
     playGame playTheGame = new playGame();
+
+    ComboBox<Integer> numDraws;
+    int draws;
+
+    private void fadeTransition(Stage stage, Scene newScene) {
+        // If the stage has no scene yet, just set it (prevents null errors on startup)
+        if (stage.getScene() == null || stage.getScene().getRoot() == null) {
+            stage.setScene(newScene);
+            return;
+        }
+
+        // Fade out current scene
+        FadeTransition fadeOut = new FadeTransition(Duration.seconds(1), stage.getScene().getRoot());
+        fadeOut.setFromValue(1.0);
+        fadeOut.setToValue(0.0);
+
+        fadeOut.setOnFinished(e -> {
+            // Switch scene
+            stage.setScene(newScene);
+
+            // Prepare new scene to fade in
+            if (newScene.getRoot() != null) {
+                newScene.getRoot().setOpacity(0);
+                FadeTransition fadeIn = new FadeTransition(Duration.seconds(1), newScene.getRoot());
+                fadeIn.setFromValue(0.0);
+                fadeIn.setToValue(1.0);
+                fadeIn.play();
+            }
+        });
+
+        fadeOut.play();
+    }
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -56,9 +87,18 @@ public class JavaFXTemplate extends Application {
 
         try{
         startToGameButton.setOnAction(e -> primaryStage.setScene(sceneMap.get("game")));
-        PlayButton.setOnAction(e -> primaryStage.setScene(sceneMap.get("drawing")));
-        playAgain.setOnAction(e -> {primaryStage.setScene(sceneMap.get("start")); resetBoardForPlayAgain();});
-        toResults.setOnAction(e -> primaryStage.setScene(sceneMap.get("result")));
+        PlayButton.setOnAction(e -> fadeTransition(primaryStage, sceneMap.get("drawing")));
+        playAgain.setOnAction(e -> {
+            resetBoardForPlayAgain();
+
+            sceneMap.put("start", createStartScene());
+            sceneMap.put("game", createGameScene());
+            sceneMap.put("drawing", createDrawingScene());
+            sceneMap.put("result", resultScene());
+
+            fadeTransition(primaryStage, sceneMap.get("start"));
+        });
+        toResults.setOnAction(e -> fadeTransition(primaryStage, sceneMap.get("result")));
         //# of scenes returned from # of methods; put in hashmap
         sceneMap.put("start", createStartScene());
         sceneMap.put("game", createGameScene());
@@ -144,26 +184,24 @@ public class JavaFXTemplate extends Application {
 
         PlayButton.setDisable(true);
 
-        //draws
-        String drawString = "# of Draws";
-        Label drawLabel = new Label(drawString);
-        ComboBox<Integer> numDraws = new ComboBox<>();
         numDraws = new ComboBox<>();
         numDraws.getItems().addAll(1, 2, 3, 4);
-        numDraws.setPromptText("Select an option");
-        VBox conDraws = new VBox(drawLabel, numDraws);
+        numDraws.setPromptText("# of draws");
+        VBox conDraws = new VBox(numDraws);
         conDraws.setSpacing(15);
         conDraws.setAlignment(Pos.TOP_CENTER);
 
-        VBox RightButtons = new VBox(pickBut, randomFill, randomPicks, clear, PlayButton);
+
+        VBox RightButtons = new VBox(conDraws,pickBut, randomFill, randomPicks, clear, PlayButton);
         RightButtons.setSpacing(15);
         RightButtons.setAlignment(Pos.CENTER);
 
         BorderPane root = new BorderPane();
         MenuBar menuBarGame =  new MenuBarStart.MenuBarGame(root);
+//        root.setTop(conDraws);
         root.setStyle("-fx-background-color: skyblue;");
         root.setTop(menuBarGame);
-//        root.setTop(conDraws);
+        root.setBottom(conDraws);
         root.setCenter(daGrid);
         root.setRight(RightButtons);
         playNums = player.getPlayerPicks();
@@ -188,11 +226,20 @@ public class JavaFXTemplate extends Application {
     }
 
     public Scene createDrawingScene(){
-        System.out.println("Creating Drawing Scene");
-        playTheGame.draw20Numbers();
-        System.out.println("Got 20 numbers");
-        ArrayList<Integer> matched = playTheGame.matchNumbers(player.getPlayerPicks());
-        System.out.println("Got matching numbers: "+ matched);
+//        System.out.println("Creating Drawing Scene");
+//        playTheGame.draw20Numbers();
+//        System.out.println("Got 20 numbers");
+        ArrayList<ArrayList<Integer>> matched = new ArrayList<>();
+
+        numDraws.setOnAction(e -> {
+            for(int i = 0; i < draws; i++){
+//                playTheGame.draw20Numbers();
+//                matched.add(playTheGame.matchNumbers(player.getPlayerPicks()));
+            }
+        });
+
+//        ArrayList<Integer> matched = playTheGame.matchNumbers(player.getPlayerPicks());
+//        System.out.println("Got matching numbers: "+ matched);
 
         BorderPane root = new BorderPane();
         root.setStyle("-fx-background-color: red;");
@@ -212,7 +259,12 @@ public class JavaFXTemplate extends Application {
 
         Button toMatch = new Button("spin");
         toMatch.setMinWidth(40);
-        toMatch.setOnAction(e -> {handleDrawing(playNums);});
+//        toMatch.setOnAction(e -> {handleDrawing(playNums);});
+        toMatch.setOnAction(e -> {
+            for(int i = 0; i < draws; i++){
+                handleDrawing(matched, i);
+            }
+        });
 
         gridToMatch.setAlignment(Pos.CENTER);
         toResults.setPrefSize(200, 100);
@@ -283,7 +335,7 @@ public class JavaFXTemplate extends Application {
         PlayButton.setDisable(false);
     }
 
-    public void handleDrawing(ArrayList<Integer> matches){
+    public void handleDrawingtemp(ArrayList<Integer> matches){
         //players numbers get drawn
         ArrayList<Integer> toMatch = playTheGame.matchNumbers(matches);
         System.out.println(player.getPlayerPicks());
@@ -299,6 +351,25 @@ public class JavaFXTemplate extends Application {
 //                    }
             }
         }
+
+    }//end of drawing func
+
+    public void handleDrawing(ArrayList<ArrayList<Integer>> matched, int idx){
+        //players numbers get drawn
+    //        ArrayList<Integer> toMatch = playTheGame.matchNumbers(playerNums);
+    //        for (int i = 0; i < draws; i++) {
+        ArrayList<Integer> toMatch = matched.get(idx);
+        //        System.out.println(player.getPlayerPicks());
+
+        for (int i = 0; i < 80; i++) {
+            Node node = gridToMatch.getChildren().get(i);
+            if (node instanceof Button) {
+                if (toMatch.contains(i + 1)) {
+                    node.setStyle("-fx-opacity: 1.0; -fx-background-color: gold;");
+                }
+            }
+        }
+    //        }
 
     }//end of drawing func
 
