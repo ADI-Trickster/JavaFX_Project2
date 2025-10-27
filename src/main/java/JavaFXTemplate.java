@@ -10,6 +10,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.scene.control.ComboBox;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,6 +28,7 @@ public class JavaFXTemplate extends Application {
     Button randomPicks;
     Button randomFill;
     Button clear;
+
 
     PauseTransition pause = new PauseTransition(Duration.seconds(3));
     Player player = new Player();
@@ -142,6 +144,17 @@ public class JavaFXTemplate extends Application {
 
         PlayButton.setDisable(true);
 
+        //draws
+        String drawString = "# of Draws";
+        Label drawLabel = new Label(drawString);
+        ComboBox<Integer> numDraws = new ComboBox<>();
+        numDraws = new ComboBox<>();
+        numDraws.getItems().addAll(1, 2, 3, 4);
+        numDraws.setPromptText("Select an option");
+        VBox conDraws = new VBox(drawLabel, numDraws);
+        conDraws.setSpacing(15);
+        conDraws.setAlignment(Pos.TOP_CENTER);
+
         VBox RightButtons = new VBox(pickBut, randomFill, randomPicks, clear, PlayButton);
         RightButtons.setSpacing(15);
         RightButtons.setAlignment(Pos.CENTER);
@@ -150,6 +163,7 @@ public class JavaFXTemplate extends Application {
         MenuBar menuBarGame =  new MenuBarStart.MenuBarGame(root);
         root.setStyle("-fx-background-color: skyblue;");
         root.setTop(menuBarGame);
+        root.setTop(conDraws);
         root.setCenter(daGrid);
         root.setRight(RightButtons);
         playNums = player.getPlayerPicks();
