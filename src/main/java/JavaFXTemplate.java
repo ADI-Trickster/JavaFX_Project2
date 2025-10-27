@@ -10,7 +10,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import javafx.animation.FadeTransition;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -64,8 +64,10 @@ public class JavaFXTemplate extends Application {
         launch(args);
     }
 
+    //feel free to remove the starter code from this method
     @Override
     public void start(Stage primaryStage) throws Exception {
+        // TODO Auto-generated method stub
         primaryStage.setTitle("Welcome to Keno Game(Project 2)");
 
         startToGameButton = new Button("Start Game");
@@ -193,6 +195,7 @@ public class JavaFXTemplate extends Application {
 
         BorderPane root = new BorderPane();
         MenuBar menuBarGame =  new MenuBarStart.MenuBarGame(root);
+//        root.setTop(conDraws);
         root.setStyle("-fx-background-color: skyblue;");
         root.setTop(menuBarGame);
         root.setCenter(daGrid);
@@ -226,7 +229,7 @@ public class JavaFXTemplate extends Application {
             Integer draws = numDraws.getValue();
             for(int i = 0; i < draws; i++){
                 playTheGame.draw20Numbers();
-                matched.add(new ArrayList<>(playTheGame.getDrawnNumbers()));
+                matched.add(playTheGame.matchNumbers(player.getPlayerPicks()));
             }
         });
 
@@ -248,14 +251,18 @@ public class JavaFXTemplate extends Application {
 
         Button toMatch = new Button("spin");
         toMatch.setMinWidth(40);
+
         toMatch.setOnAction(e -> {
+//            if(idx< numDraws.getValue()){
+//                handleDrawing(matched, idx);
+//                idx++;
+//            }
             idx = 0;
             playDrawsWPause(matched, idx);
         });
 
         gridToMatch.setAlignment(Pos.CENTER);
         toResults.setPrefSize(200, 100);
-        toResults.setDisable(true);
         VBox centered = new VBox(40, gridToMatch, toMatch, toResults);
         centered.setAlignment(Pos.CENTER);
         root.setCenter(centered);
@@ -315,6 +322,9 @@ public class JavaFXTemplate extends Application {
                 if(player.getPlayerPicks().contains(i+1)){
                     node.setStyle("-fx-opacity: 0.7;  -fx-background-color: green;");
                 }
+//                else{
+//                    node.setStyle("-fx-opacity: 1; -fx-background-color: lightgray;");
+//                }
             }
         }
         PlayButton.setDisable(false);
@@ -323,12 +333,8 @@ public class JavaFXTemplate extends Application {
     private void playDrawsWPause(ArrayList<ArrayList<Integer>> matched, int drawIdx) {
         if (drawIdx >= matched.size()) {
             System.out.println("done drawing");
-            toResults.setDisable(false);
             return;
         }
-        System.out.println(drawIdx);
-        System.out.println(matched.get(drawIdx));
-
         handleDrawing(matched, drawIdx);
 
         pause.setOnFinished(e -> {
@@ -338,22 +344,24 @@ public class JavaFXTemplate extends Application {
         pause.play();
     }
 
+
     public void handleDrawing(ArrayList<ArrayList<Integer>> matched, int idx){
         ArrayList<Integer> toMatch = matched.get(idx);
-        System.out.println("toMatch: " + toMatch);
         for (int i = 0; i < 80; i++) {
             Node node = gridToMatch.getChildren().get(i);
             if (node instanceof Button) {
-                if (toMatch.contains(i + 1) && player.getPlayerPicks().contains(i + 1)) {
+                if (toMatch.contains(i + 1)) {
+                    node.setStyle("-fx-opacity: 1.0; -fx-background-color: gold;");
+                }else if (player.getPlayerPicks().contains(i + 1)) {
                     node.setStyle("-fx-opacity: 1.0; -fx-background-color: green;");
-                } else if (player.getPlayerPicks().contains(i + 1)) {
-                    node.setStyle("-fx-opacity: 1.0; -fx-background-color: lightblue;");
                 } else{
                     node.setStyle("-fx-opacity: 1.0;");
                 }
             }
         }
-        player.decideWinning(player.getMaxPicks(), toMatch);
+
+//        pause and resetButtonsDrawing()
+
     }//end of drawing func
 
     public void resetButtonsDrawing(){
