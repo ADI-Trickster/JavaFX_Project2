@@ -36,24 +36,18 @@ public class JavaFXTemplate extends Application {
     ComboBox<Integer> numDraws;
     int idx = 0;
 
-    //feel free to remove the starter code from this method
     private void fadeTransition(Stage stage, Scene newScene) {
-        // If the stage has no scene yet, just set it (prevents null errors on startup)
         if (stage.getScene() == null || stage.getScene().getRoot() == null) {
             stage.setScene(newScene);
             return;
         }
 
-        // Fade out current scene
         FadeTransition fadeOut = new FadeTransition(Duration.seconds(1), stage.getScene().getRoot());
         fadeOut.setFromValue(1.0);
         fadeOut.setToValue(0.0);
 
         fadeOut.setOnFinished(e -> {
-            // Switch scene
             stage.setScene(newScene);
-
-            // Prepare new scene to fade in
             if (newScene.getRoot() != null) {
                 newScene.getRoot().setOpacity(0);
                 FadeTransition fadeIn = new FadeTransition(Duration.seconds(0.5), newScene.getRoot());
@@ -67,14 +61,11 @@ public class JavaFXTemplate extends Application {
     }
 
     public static void main(String[] args) {
-        // TODO Auto-generated method stub
         launch(args);
     }
 
-    //feel free to remove the starter code from this method
     @Override
     public void start(Stage primaryStage) throws Exception {
-        // TODO Auto-generated method stub
         primaryStage.setTitle("Welcome to Keno Game(Project 2)");
 
         startToGameButton = new Button("Start Game");
@@ -202,7 +193,6 @@ public class JavaFXTemplate extends Application {
 
         BorderPane root = new BorderPane();
         MenuBar menuBarGame =  new MenuBarStart.MenuBarGame(root);
-//        root.setTop(conDraws);
         root.setStyle("-fx-background-color: skyblue;");
         root.setTop(menuBarGame);
         root.setCenter(daGrid);
@@ -325,9 +315,6 @@ public class JavaFXTemplate extends Application {
                 if(player.getPlayerPicks().contains(i+1)){
                     node.setStyle("-fx-opacity: 0.7;  -fx-background-color: green;");
                 }
-//                else{
-//                    node.setStyle("-fx-opacity: 1; -fx-background-color: lightgray;");
-//                }
             }
         }
         PlayButton.setDisable(false);
