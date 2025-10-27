@@ -257,10 +257,12 @@ public class JavaFXTemplate extends Application {
         toMatch.setMinWidth(40);
 
         toMatch.setOnAction(e -> {
-            if(idx< numDraws.getValue()){
-                handleDrawing(matched, idx);
-                idx++;
-            }
+//            if(idx< numDraws.getValue()){
+//                handleDrawing(matched, idx);
+//                idx++;
+//            }
+            idx = 0;
+            playDrawsWPause(matched, idx);
         });
 
         gridToMatch.setAlignment(Pos.CENTER);
@@ -332,24 +334,20 @@ public class JavaFXTemplate extends Application {
         PlayButton.setDisable(false);
     }
 
-    public void handleDrawingtemp(ArrayList<Integer> matches){
-        //players numbers get drawn
-        ArrayList<Integer> toMatch = playTheGame.matchNumbers(matches);
-        System.out.println(player.getPlayerPicks());
-
-        for (int i = 0; i < 80; i++) {
-            Node node = gridToMatch.getChildren().get(i);
-            if (node instanceof Button){
-                    if (toMatch.contains(i+1)) {
-                        node.setStyle("-fx-opacity: 1.0; -fx-background-color: gold;");
-                    }
-//                    else{
-////                        node.setStyle("-fx-opacity: 0.7; -fx-background-color: blue;");
-//                    }
-            }
+    private void playDrawsWPause(ArrayList<ArrayList<Integer>> matched, int drawIdx) {
+        if (drawIdx >= matched.size()) {
+            System.out.println("done drawing");
+            return;
         }
+        handleDrawing(matched, drawIdx);
 
-    }//end of drawing func
+        pause.setOnFinished(e -> {
+            resetButtonsDrawing();
+            playDrawsWPause(matched, drawIdx + 1);
+        });
+        pause.play();
+    }
+
 
     public void handleDrawing(ArrayList<ArrayList<Integer>> matched, int idx){
         ArrayList<Integer> toMatch = matched.get(idx);
@@ -365,6 +363,9 @@ public class JavaFXTemplate extends Application {
                 }
             }
         }
+
+//        pause and resetButtonsDrawing()
+
     }//end of drawing func
 
     public void resetButtonsDrawing(){
