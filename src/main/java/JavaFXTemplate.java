@@ -30,6 +30,7 @@ public class JavaFXTemplate extends Application {
 
     PauseTransition pause = new PauseTransition(Duration.seconds(3));
     Player player = new Player();
+    ArrayList<Integer>  playNums;
     playGame playTheGame = new playGame();
 
 	public static void main(String[] args) {
@@ -146,6 +147,7 @@ public class JavaFXTemplate extends Application {
         root.setTop(menuBarGame);
         root.setCenter(daGrid);
         root.setRight(RightButtons);
+        playNums = player.getPlayerPicks();
 
         return new Scene(root, 850, 750);
     }//end of game choice scene
@@ -170,6 +172,8 @@ public class JavaFXTemplate extends Application {
         System.out.println("Creating Drawing Scene");
         playTheGame.draw20Numbers();
         System.out.println("Got 20 numbers");
+        ArrayList<Integer> matched = playTheGame.matchNumbers(player.getPlayerPicks());
+        System.out.println("Got matching numbers: "+ matched);
 
         BorderPane root = new BorderPane();
         root.setStyle("-fx-background-color: red;");
@@ -179,6 +183,12 @@ public class JavaFXTemplate extends Application {
             for(int _y = 0; _y < 8; _y++ ){
                 Button button = new Button(""+ num);
                 button.setMinWidth(40);
+                if (playNums.contains(num)) {
+                    button.setStyle("-fx-opacity: 1; -fx-background-color: green;");
+                }
+//                else {
+////                    button.setStyle("-fx-opacity: 0.7;");
+//                }
                 gridToMatch.add(button, _y, _x);
                 num++;
             }
@@ -186,30 +196,11 @@ public class JavaFXTemplate extends Application {
 
         Button toMatch = new Button("spin");
         toMatch.setMinWidth(40);
-
-        ArrayList<Integer> matched = playTheGame.matchNumbers(player.getPlayerPicks());
-        toMatch.setOnAction(e -> {playTheGame.matchNumbers(player.getPlayerPicks());});
-        //matched = playTheGame.matchNumbers(player.getPlayerPicks());
-        System.out.println(player.getPlayerPicks());
-        System.out.println("Got matching numbers: "+ matched);
-        for (int i = 0; i < 80; i++) {
-            Node node = gridToMatch.getChildren().get(i);
-            if (node instanceof Button){
-                if(matched.contains(i+1)){
-//                    System.out.println(player.getPlayerPicks());
-                    node.setStyle("-fx-background-color: red;");
-                }
-//                else{
-//                    node.setStyle("-fx-opacity: 1;  -fx-background-color: green;");
-////                    node.setStyle("-fx-opacity: 0.7;");
-//                }
-            }
-        }
-//        handleDrawing(matched);
+        toMatch.setOnAction(e -> {handleDrawing(playNums);});
 
         gridToMatch.setAlignment(Pos.CENTER);
         toResults.setPrefSize(200, 100);
-        VBox centered = new VBox(40, gridToMatch,toMatch, toResults);
+        VBox centered = new VBox(40, gridToMatch, toMatch, toResults);
         centered.setAlignment(Pos.CENTER);
         root.setCenter(centered);
 
@@ -278,28 +269,22 @@ public class JavaFXTemplate extends Application {
 
     public void handleDrawing(ArrayList<Integer> matches){
         //players numbers get drawn
+//        game.getDrawnNumbers();
+        ArrayList<Integer> toMatch = playTheGame.matchNumbers(matches);
         System.out.println(player.getPlayerPicks());
 
         for (int i = 0; i < 80; i++) {
             Node node = gridToMatch.getChildren().get(i);
             if (node instanceof Button){
-                if(player.getPlayerPicks().contains(i+1)){
-                    node.setStyle("-fx-opacity: 1;  -fx-background-color: green;");
-                }
-                else{
-                    node.setStyle("-fx-opacity: 0.7;");
-                }
+                    if (toMatch.contains(i+1)) {
+                        node.setStyle("-fx-opacity: 1.0; -fx-background-color: gold;");
+                    }else{
+//                        node.setStyle("-fx-opacity: 0.7; -fx-background-color: blue;");
+                    }
+
+//                }
             }
         }
-//        for (int i = 0; i < 80; i++) {
-//            Node node = gridToMatch.getChildren().get(i);
-//            if (node instanceof Button) {
-//                for (int x = 0; x < matches.size(); x++) {
-//                    // for every match the button changes to gold
-////                    with a pause between each change
-//                }
-//            }
-//        }
 //        for (int i = 0; i < matches.size(); i++) {
 //            int change = matches.get(i);
 //            Node node = gridToMatch.getChildren().get(change - 1);
@@ -318,7 +303,6 @@ public class JavaFXTemplate extends Application {
 //
 //                pause.play();
 //            }
-//
 //        }
 
     }//end of drawing func
