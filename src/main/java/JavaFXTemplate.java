@@ -11,6 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class JavaFXTemplate extends Application {
@@ -19,11 +20,17 @@ public class JavaFXTemplate extends Application {
     HashMap<String, Scene> sceneMap;
     MenuBar menuBar;
     GridPane daGrid = new GridPane();
+    GridPane gridToMatch  = new GridPane();
     Button PlayButton;
     Button playAgain;
+    Button toResults;
+    Button randomPicks;
+    Button randomFill;
+    Button clear;
 
     PauseTransition pause = new PauseTransition(Duration.seconds(3));
     Player player = new Player();
+    playGame playTheGame = new playGame();
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -42,10 +49,12 @@ public class JavaFXTemplate extends Application {
         menuBar =  new MenuBar();
         PlayButton = new Button("Play");
         playAgain = new Button("Play Again");
+        toResults =  new Button("To Results");
 
         startToGameButton.setOnAction(e -> primaryStage.setScene(sceneMap.get("game")));
-        PlayButton.setOnAction(e -> primaryStage.setScene(sceneMap.get("result")));//switch to drawing then results
+        PlayButton.setOnAction(e -> primaryStage.setScene(sceneMap.get("drawing")));
         playAgain.setOnAction(e -> {primaryStage.setScene(sceneMap.get("start")); resetBoardForPlayAgain();});
+        toResults.setOnAction(e -> primaryStage.setScene(sceneMap.get("result")));
         //# of scenes returned from # of methods; put in hashmap
         sceneMap.put("start", createStartScene());
         sceneMap.put("game", createGameScene());
@@ -94,7 +103,7 @@ public class JavaFXTemplate extends Application {
 //        //pick rolls
         Button pick1Button = new Button("  1 picks");
         pick1Button.setMinWidth(55);
-        pick1Button.setOnAction(event -> handleHowManyPicks(1));
+        pick1Button.setOnAction(event -> {handleHowManyPicks(1);});
 
         Button pick4Button = new Button(" 4 picks");
         pick4Button.setMinWidth(55);
@@ -113,16 +122,19 @@ public class JavaFXTemplate extends Application {
         pickBut.setAlignment(Pos.CENTER);
 //        //end on pick roles
 
-        Button randomPicks = new Button("Quick Fill All");
-        randomPicks.setOnAction(e -> {player.quickPickAll(); handleRQuickFillLook();});
+        randomPicks = new Button("Quick Fill All");
+        randomPicks.setOnAction(e -> {player.quickPickAll(); handleQuickFillLook();});
+        randomPicks.setDisable(true);
 
-        Button randomFill = new Button("Quick Fill");
-        randomFill.setOnAction(e -> {player.quickFill(); handleRQuickFillLook();});
+        randomFill = new Button("Quick Fill");
+        randomFill.setOnAction(e -> {player.quickFill(); handleQuickFillLook();});
+        randomFill.setDisable(true);
 
-        Button clear = new Button("clear");
+        clear = new Button("clear");
         clear.setOnAction(e -> {player.clearPicks(); resetButtons();});
+        clear.setDisable(true);
+
         PlayButton.setDisable(true);
-//        PlayButton.setOnAction(e -> {primaryStage.setScene(sceneMap.get("game"))});
 
         VBox RightButtons = new VBox(pickBut, randomFill, randomPicks, clear, PlayButton);
         RightButtons.setSpacing(15);
@@ -154,9 +166,53 @@ public class JavaFXTemplate extends Application {
         return new Scene(pane, 850, 750);
     }
 
-    public Scene createDrawingScene() {
+    public Scene createDrawingScene(){
+        System.out.println("Creating Drawing Scene");
+        playTheGame.draw20Numbers();
+        System.out.println("Got 20 numbers");
+
         BorderPane root = new BorderPane();
         root.setStyle("-fx-background-color: red;");
+
+        int num = 1;
+        for(int _x = 0; _x < 10; _x++ ){
+            for(int _y = 0; _y < 8; _y++ ){
+                Button button = new Button(""+ num);
+                button.setMinWidth(40);
+                gridToMatch.add(button, _y, _x);
+                num++;
+            }
+        }
+
+        Button toMatch = new Button("spin");
+        toMatch.setMinWidth(40);
+
+        ArrayList<Integer> matched = playTheGame.matchNumbers(player.getPlayerPicks());
+        toMatch.setOnAction(e -> {playTheGame.matchNumbers(player.getPlayerPicks());});
+        //matched = playTheGame.matchNumbers(player.getPlayerPicks());
+        System.out.println(player.getPlayerPicks());
+        System.out.println("Got matching numbers: "+ matched);
+        for (int i = 0; i < 80; i++) {
+            Node node = gridToMatch.getChildren().get(i);
+            if (node instanceof Button){
+                if(matched.contains(i+1)){
+//                    System.out.println(player.getPlayerPicks());
+                    node.setStyle("-fx-background-color: red;");
+                }
+//                else{
+//                    node.setStyle("-fx-opacity: 1;  -fx-background-color: green;");
+////                    node.setStyle("-fx-opacity: 0.7;");
+//                }
+            }
+        }
+//        handleDrawing(matched);
+
+        gridToMatch.setAlignment(Pos.CENTER);
+        toResults.setPrefSize(200, 100);
+        VBox centered = new VBox(40, gridToMatch,toMatch, toResults);
+        centered.setAlignment(Pos.CENTER);
+        root.setCenter(centered);
+
         return new Scene(root, 850, 750);
     }
 
@@ -181,6 +237,9 @@ public class JavaFXTemplate extends Application {
     public void handleHowManyPicks(int num){
         daGrid.setDisable(false);
         resetButtons();
+        randomPicks.setDisable(false);
+        randomFill.setDisable(false);
+        clear.setDisable(false);
         System.out.println("Player picks: " + player.getPlayerPicks());
         player.setMaxPicks(num);
         if(player.getPlayerPicks().size() > player.getMaxPicks()) {
@@ -200,11 +259,9 @@ public class JavaFXTemplate extends Application {
         System.out.println("buttons reset");
     }
 
-    public void handleRQuickFillLook(){
-//        player.quickFill();
-        System.out.println("Player picks: " + player.getPlayerPicks());
-//        System.out.println(player.getPlayerPicks());
+    public void handleQuickFillLook(){
         resetButtons();
+        System.out.println("Player picks: " + player.getPlayerPicks());
         for (int i = 0; i < 80; i++) {
             Node node = daGrid.getChildren().get(i);
             if (node instanceof Button){
@@ -218,6 +275,53 @@ public class JavaFXTemplate extends Application {
         }
         PlayButton.setDisable(false);
     }
+
+    public void handleDrawing(ArrayList<Integer> matches){
+        //players numbers get drawn
+        System.out.println(player.getPlayerPicks());
+
+        for (int i = 0; i < 80; i++) {
+            Node node = gridToMatch.getChildren().get(i);
+            if (node instanceof Button){
+                if(player.getPlayerPicks().contains(i+1)){
+                    node.setStyle("-fx-opacity: 1;  -fx-background-color: green;");
+                }
+                else{
+                    node.setStyle("-fx-opacity: 0.7;");
+                }
+            }
+        }
+//        for (int i = 0; i < 80; i++) {
+//            Node node = gridToMatch.getChildren().get(i);
+//            if (node instanceof Button) {
+//                for (int x = 0; x < matches.size(); x++) {
+//                    // for every match the button changes to gold
+////                    with a pause between each change
+//                }
+//            }
+//        }
+//        for (int i = 0; i < matches.size(); i++) {
+//            int change = matches.get(i);
+//            Node node = gridToMatch.getChildren().get(change - 1);
+//            PauseTransition drawingPause = new PauseTransition(Duration.seconds(2);
+//
+//            if (node instanceof Button) {
+//                Button button = (Button) node;
+//
+//                // Create a pause for each number with increasing delay
+//                PauseTransition pause = new PauseTransition(Duration.seconds(2 * i)); // 2 seconds between each draw
+//
+//                pause.setOnFinished(e -> {
+//                    // Highlight the drawn number in gold
+//                    button.setStyle("-fx-opacity: 1; -fx-background-color: gold;");
+//                });
+//
+//                pause.play();
+//            }
+//
+//        }
+
+    }//end of drawing func
 
     public void resetBoardForPlayAgain(){
         player.clearPicks();

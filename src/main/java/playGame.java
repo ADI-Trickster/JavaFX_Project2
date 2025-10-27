@@ -7,13 +7,14 @@ public class playGame{
 
     public playGame() {
         drawnNumbers = new ArrayList<>();
+        random =  new Random();
     }
 
     public ArrayList<Integer> getDrawnNumbers() {
         return drawnNumbers;
     }
 
-    public void addRandomNumber(){
+    private void addRandomNumber(){
         int ranNum = random.nextInt(80) + 1;
         if(!this.drawnNumbers.contains(ranNum)){
             this.drawnNumbers.add(ranNum);
@@ -21,9 +22,11 @@ public class playGame{
     }
 
     public void draw20Numbers(){
-        while (drawnNumbers.size() <= 20){
+        drawnNumbers.clear();
+        while (drawnNumbers.size() != 20){
             addRandomNumber();
         }
+        System.out.println("drawnNumbers: " + drawnNumbers);
     }
 
     public ArrayList<Integer> matchNumbers(ArrayList<Integer> toCheck){
