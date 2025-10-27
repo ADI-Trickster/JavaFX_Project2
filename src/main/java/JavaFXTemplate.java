@@ -163,7 +163,7 @@ public class JavaFXTemplate extends Application {
         MenuBar menuBarGame =  new MenuBarStart.MenuBarGame(root);
         root.setStyle("-fx-background-color: skyblue;");
         root.setTop(menuBarGame);
-        root.setTop(conDraws);
+//        root.setTop(conDraws);
         root.setCenter(daGrid);
         root.setRight(RightButtons);
         playNums = player.getPlayerPicks();
