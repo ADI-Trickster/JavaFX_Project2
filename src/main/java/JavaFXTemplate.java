@@ -10,7 +10,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
+import javafx.animation.FadeTransition;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -36,11 +36,40 @@ public class JavaFXTemplate extends Application {
     ComboBox<Integer> numDraws;
     int idx = 0;
 
+    //feel free to remove the starter code from this method
+    private void fadeTransition(Stage stage, Scene newScene) {
+        // If the stage has no scene yet, just set it (prevents null errors on startup)
+        if (stage.getScene() == null || stage.getScene().getRoot() == null) {
+            stage.setScene(newScene);
+            return;
+        }
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		launch(args);
-	}
+        // Fade out current scene
+        FadeTransition fadeOut = new FadeTransition(Duration.seconds(1), stage.getScene().getRoot());
+        fadeOut.setFromValue(1.0);
+        fadeOut.setToValue(0.0);
+
+        fadeOut.setOnFinished(e -> {
+            // Switch scene
+            stage.setScene(newScene);
+
+            // Prepare new scene to fade in
+            if (newScene.getRoot() != null) {
+                newScene.getRoot().setOpacity(0);
+                FadeTransition fadeIn = new FadeTransition(Duration.seconds(0.5), newScene.getRoot());
+                fadeIn.setFromValue(0.0);
+                fadeIn.setToValue(1.0);
+                fadeIn.play();
+            }
+        });
+
+        fadeOut.play();
+    }
+
+    public static void main(String[] args) {
+        // TODO Auto-generated method stub
+        launch(args);
+    }
 
     //feel free to remove the starter code from this method
     @Override
@@ -57,23 +86,34 @@ public class JavaFXTemplate extends Application {
         toResults =  new Button("To Results");
 
         try{
-        startToGameButton.setOnAction(e -> primaryStage.setScene(sceneMap.get("game")));
-        PlayButton.setOnAction(e -> primaryStage.setScene(sceneMap.get("drawing")));
-        playAgain.setOnAction(e -> {primaryStage.setScene(sceneMap.get("start")); resetBoardForPlayAgain();});
-        toResults.setOnAction(e -> primaryStage.setScene(sceneMap.get("result")));
-        //# of scenes returned from # of methods; put in hashmap
-        sceneMap.put("start", createStartScene());
-        sceneMap.put("game", createGameScene());
-        sceneMap.put("result", resultScene());
-        sceneMap.put("drawing", createDrawingScene());
+            startToGameButton.setOnAction(e -> primaryStage.setScene(sceneMap.get("game")));
+            PlayButton.setOnAction(e -> fadeTransition(primaryStage, sceneMap.get("drawing")));
+            playAgain.setOnAction(e -> {
+                resetBoardForPlayAgain();
 
-        primaryStage.setScene(sceneMap.get("start"));
+                sceneMap.put("start", createStartScene());
+                sceneMap.put("game", createGameScene());
+                sceneMap.put("drawing", createDrawingScene());
+                sceneMap.put("result", resultScene());
 
-        primaryStage.show();
+                fadeTransition(primaryStage, sceneMap.get("start"));
+            });
+//            toResults.setOnAction(e -> fadeTransition(primaryStage, sceneMap.get("result")));
+            toResults.setOnAction(e -> fadeTransition(primaryStage, resultScene()));
+            //# of scenes returned from # of methods; put in hashmap
+            sceneMap.put("start", createStartScene());
+            sceneMap.put("game", createGameScene());
+            sceneMap.put("result", resultScene());
+            sceneMap.put("drawing", createDrawingScene());
+
+            primaryStage.setScene(sceneMap.get("start"));
+
+            primaryStage.show();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+
 
     public Scene createStartScene() {
         text.setText("Welcome to Keno Game(Project 2)");
@@ -196,7 +236,7 @@ public class JavaFXTemplate extends Application {
             Integer draws = numDraws.getValue();
             for(int i = 0; i < draws; i++){
                 playTheGame.draw20Numbers();
-                matched.add(playTheGame.matchNumbers(player.getPlayerPicks()));
+                matched.add(new ArrayList<>(playTheGame.getDrawnNumbers()));
             }
         });
 
@@ -218,18 +258,14 @@ public class JavaFXTemplate extends Application {
 
         Button toMatch = new Button("spin");
         toMatch.setMinWidth(40);
-
         toMatch.setOnAction(e -> {
-//            if(idx< numDraws.getValue()){
-//                handleDrawing(matched, idx);
-//                idx++;
-//            }
             idx = 0;
             playDrawsWPause(matched, idx);
         });
 
         gridToMatch.setAlignment(Pos.CENTER);
         toResults.setPrefSize(200, 100);
+        toResults.setDisable(true);
         VBox centered = new VBox(40, gridToMatch, toMatch, toResults);
         centered.setAlignment(Pos.CENTER);
         root.setCenter(centered);
@@ -300,8 +336,12 @@ public class JavaFXTemplate extends Application {
     private void playDrawsWPause(ArrayList<ArrayList<Integer>> matched, int drawIdx) {
         if (drawIdx >= matched.size()) {
             System.out.println("done drawing");
+            toResults.setDisable(false);
             return;
         }
+        System.out.println(drawIdx);
+        System.out.println(matched.get(drawIdx));
+
         handleDrawing(matched, drawIdx);
 
         pause.setOnFinished(e -> {
@@ -311,24 +351,22 @@ public class JavaFXTemplate extends Application {
         pause.play();
     }
 
-
     public void handleDrawing(ArrayList<ArrayList<Integer>> matched, int idx){
         ArrayList<Integer> toMatch = matched.get(idx);
+        System.out.println("toMatch: " + toMatch);
         for (int i = 0; i < 80; i++) {
             Node node = gridToMatch.getChildren().get(i);
             if (node instanceof Button) {
-                if (toMatch.contains(i + 1)) {
-                    node.setStyle("-fx-opacity: 1.0; -fx-background-color: gold;");
-                }else if (player.getPlayerPicks().contains(i + 1)) {
+                if (toMatch.contains(i + 1) && player.getPlayerPicks().contains(i + 1)) {
                     node.setStyle("-fx-opacity: 1.0; -fx-background-color: green;");
+                } else if (player.getPlayerPicks().contains(i + 1)) {
+                    node.setStyle("-fx-opacity: 1.0; -fx-background-color: lightblue;");
                 } else{
                     node.setStyle("-fx-opacity: 1.0;");
                 }
             }
         }
-
-//        pause and resetButtonsDrawing()
-
+        player.decideWinning(player.getMaxPicks(), toMatch);
     }//end of drawing func
 
     public void resetButtonsDrawing(){
