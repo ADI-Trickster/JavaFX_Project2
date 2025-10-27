@@ -52,6 +52,7 @@ public class JavaFXTemplate extends Application {
         playAgain = new Button("Play Again");
         toResults =  new Button("To Results");
 
+        try{
         startToGameButton.setOnAction(e -> primaryStage.setScene(sceneMap.get("game")));
         PlayButton.setOnAction(e -> primaryStage.setScene(sceneMap.get("drawing")));
         playAgain.setOnAction(e -> {primaryStage.setScene(sceneMap.get("start")); resetBoardForPlayAgain();});
@@ -63,7 +64,11 @@ public class JavaFXTemplate extends Application {
         sceneMap.put("drawing", createDrawingScene());
 
         primaryStage.setScene(sceneMap.get("start"));
+
         primaryStage.show();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Scene createStartScene() {
@@ -186,9 +191,6 @@ public class JavaFXTemplate extends Application {
                 if (playNums.contains(num)) {
                     button.setStyle("-fx-opacity: 1; -fx-background-color: green;");
                 }
-//                else {
-////                    button.setStyle("-fx-opacity: 0.7;");
-//                }
                 gridToMatch.add(button, _y, _x);
                 num++;
             }
@@ -269,7 +271,6 @@ public class JavaFXTemplate extends Application {
 
     public void handleDrawing(ArrayList<Integer> matches){
         //players numbers get drawn
-//        game.getDrawnNumbers();
         ArrayList<Integer> toMatch = playTheGame.matchNumbers(matches);
         System.out.println(player.getPlayerPicks());
 
@@ -278,38 +279,29 @@ public class JavaFXTemplate extends Application {
             if (node instanceof Button){
                     if (toMatch.contains(i+1)) {
                         node.setStyle("-fx-opacity: 1.0; -fx-background-color: gold;");
-                    }else{
-//                        node.setStyle("-fx-opacity: 0.7; -fx-background-color: blue;");
                     }
-
-//                }
+//                    else{
+////                        node.setStyle("-fx-opacity: 0.7; -fx-background-color: blue;");
+//                    }
             }
         }
-//        for (int i = 0; i < matches.size(); i++) {
-//            int change = matches.get(i);
-//            Node node = gridToMatch.getChildren().get(change - 1);
-//            PauseTransition drawingPause = new PauseTransition(Duration.seconds(2);
-//
-//            if (node instanceof Button) {
-//                Button button = (Button) node;
-//
-//                // Create a pause for each number with increasing delay
-//                PauseTransition pause = new PauseTransition(Duration.seconds(2 * i)); // 2 seconds between each draw
-//
-//                pause.setOnFinished(e -> {
-//                    // Highlight the drawn number in gold
-//                    button.setStyle("-fx-opacity: 1; -fx-background-color: gold;");
-//                });
-//
-//                pause.play();
-//            }
-//        }
 
     }//end of drawing func
+
+    public void resetButtonsDrawing(){
+        for (int i = 0; i < 80; i++) {
+            Node node =  gridToMatch.getChildren().get(i);
+            if (node instanceof Button) {
+                node.setStyle("");
+                node.setStyle("-fx-opacity: 1;");
+            }
+        }
+    }
 
     public void resetBoardForPlayAgain(){
         player.clearPicks();
         resetButtons();
+        resetButtonsDrawing();
         daGrid.setDisable(true);
         PlayButton.setDisable(true);
     }
