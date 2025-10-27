@@ -8,15 +8,34 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
+import javafx.application.Platform;
 import java.util.ArrayList;
+import java.util.Random;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.Menu;
+ import kenoMenu.MenuBarStart;
+ import kenoMenu.MenuBarStart.MenuBarGame;
 
 class MyTest {
 
     Player player;
+    playGame gameInstance;
+    private ArrayList<Integer> drawnNumbers;
+    private Random random;
+
+    @BeforeAll
+    static void initJfxToolkit() {
+        try {
+            // Attempt to initialize the platform
+            Platform.startup(() -> {});
+        } catch (IllegalStateException e) {
+            // Toolkit already initialized (e.g., in a previous test run)
+        }
+    }
 
     @BeforeEach
     void setUp() {
+        gameInstance = new playGame();
         player  = new Player();
 
     }
@@ -146,6 +165,148 @@ class MyTest {
         assertEquals(0,player.getMaxPicks(),"wrong max picks");
     }
 
+    @Test
+    void draw20NumbersTest(){
+        gameInstance.draw20Numbers();
+        assertEquals(20, gameInstance.getDrawnNumbers().size(),"wrong amount of drawn numbers");
+    }
+
+    @Test
+    void addRandomNumberTest(){
+        //in range
+        gameInstance.getDrawnNumbers().clear();
+        gameInstance.addRandomNumber();
+
+        assertEquals(1, gameInstance.getDrawnNumbers().size(), "Should have exactly one number drawn.");
+        int drawnNumber = gameInstance.getDrawnNumbers().get(0);
+
+        assertTrue(drawnNumber >= 1, "Drawn number is outside the required minimum range (1).");
+        assertTrue(drawnNumber <= 80, "Drawn number is outside the required maximum range (80).");
+    }
+
+    @Test
+    void clearPicksTest() {
+        // Setup: Add numbers to ensure the list is not empty
+        player.setMaxPicks(5);
+        player.addPlayerChoice(10);
+        player.addPlayerChoice(20);
+
+        // Verify setup size
+        assertEquals(2, player.getPlayerPickSize(), "Setup failed: PlayerPicks should have 2 numbers.");
+
+        // Action: Clear the picks
+        player.clearPicks();
+
+        // Assertions: Verify the list is empty and the size is 0
+        assertEquals(0, player.getPlayerPickSize(),
+                "clearPicks should reset the pick size to 0.");
+        assertTrue(player.getPlayerPicks().isEmpty(),
+                "clearPicks should make the playerPicks list empty.");
+    }
+
+    @Test
+    void setAndGetMaxPicksTest() {
+        final int expectedMax = 8;
+
+        // Set the value
+        player.setMaxPicks(expectedMax);
+
+        // Verify the getter returns the correct value
+        assertEquals(expectedMax, player.getMaxPicks(),
+                "getMaxPicks should return the value set by setMaxPicks.");
+    }
+
+    @Test
+    void getPlayerPickSizeTest() {
+        // Initial check
+        assertEquals(0, player.getPlayerPickSize(),
+                "Initial size should be 0.");
+
+        // Action: Add two picks
+        player.setMaxPicks(5); // Set maxPicks so adding is allowed
+        player.addPlayerChoice(1);
+        player.addPlayerChoice(2);
+
+        // Verify size increments
+        assertEquals(2, player.getPlayerPickSize(),
+                "Size should be 2 after adding two picks.");
+
+        // Action: Remove one pick
+        player.removePlayerChoice(1);
+
+        // Verify size decrements
+        assertEquals(1, player.getPlayerPickSize(),
+                "Size should be 1 after removing one pick.");
+    }
+
+    @Test
+    void matchNumbersTest() {
+        ArrayList<Integer> playerPicks = new ArrayList<>();
+        playerPicks.add(5);
+        playerPicks.add(10);
+        playerPicks.add(15); // This will be a match
+        playerPicks.add(25); // This will be a match
+
+        //make drawn # to test match
+        gameInstance.getDrawnNumbers().clear();
+        gameInstance.getDrawnNumbers().add(1);
+        gameInstance.getDrawnNumbers().add(15); // Match
+        gameInstance.getDrawnNumbers().add(2);
+        gameInstance.getDrawnNumbers().add(25); // Match
+        gameInstance.getDrawnNumbers().add(50);
+
+        for(int i = 0; gameInstance.getDrawnNumbers().size() < 20; i++) {
+            //fill rest
+            gameInstance.getDrawnNumbers().add(60 + i);
+        }
+
+        // 3. Action: Get the matches
+        ArrayList<Integer> matchedNumbers = gameInstance.matchNumbers(playerPicks);
+
+        // 4. Assertions
+        assertEquals(2, matchedNumbers.size(), "wrong # of matched numbers.");
+        assertTrue(matchedNumbers.contains(15), "15 does not match when should.");
+        assertTrue(matchedNumbers.contains(25), "25 does not match when should.");
+        assertFalse(matchedNumbers.contains(5), "5 is matched (picked not drawn) - wrong.");
+    }
+
+    @Test
+    void playerWinningsTest() {
+        assertEquals(0, player.getTotalWinning(), "Winnings = 0.");
+
+        player.addWinnings(50);
+
+        assertEquals(50, player.getTotalWinning(), "Total winnings = 50.");
+
+        player.addWinnings(10);
+
+        assertEquals(60, player.getTotalWinning(), "Total = 60.");
+    }
+
+    private Menu getMainMenu(MenuBar menuBar) {
+        assertFalse(menuBar.getMenus().isEmpty(), "MenuBar has no menus");
+        return menuBar.getMenus().get(0);
+    }
+    @Test
+    void menuBarStartNotEmptyTest() {
+        // Test the base menu (used for the start screen)
+        MenuBarStart menuBar = new MenuBarStart();
+        Menu mainMenu = getMainMenu(menuBar);
+
+        // 1. Verify the number of top-level menus and items
+        assertEquals(1, menuBar.getMenus().size(), "Dropdown Menu exists");
+        assertEquals(3, mainMenu.getItems().size(), "Rules, Odds, Exit options exist");
+    }
+
+    @Test
+    void menuBarStartRightOrderTest() {
+        MenuBarStart menuBar = new MenuBarStart();
+        Menu mainMenu = getMainMenu(menuBar);
+        // 2. Verify item names and order
+        assertEquals("Rules", mainMenu.getItems().get(0).getText());
+        assertEquals("Odds", mainMenu.getItems().get(1).getText());
+        assertEquals("Exit", mainMenu.getItems().get(2).getText());
+    }
     //matches per each picks
     //total winning don't set back to 0
 

@@ -2,8 +2,8 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class playGame{
-    private ArrayList<Integer> drawnNumbers;
-    private Random random;
+    private final ArrayList<Integer> drawnNumbers;
+    private final Random random;
     private int totalWinnings;
 
     public playGame() {
@@ -15,7 +15,7 @@ public class playGame{
         return drawnNumbers;
     }
 
-    private void addRandomNumber(){
+    public void addRandomNumber(){
         int ranNum = random.nextInt(80) + 1;
         if(!this.drawnNumbers.contains(ranNum)){
             this.drawnNumbers.add(ranNum);
