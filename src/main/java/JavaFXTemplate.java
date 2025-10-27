@@ -1,4 +1,3 @@
-import javafx.animation.FadeTransition;
 import javafx.scene.control.*;
 import kenoMenu.MenuBarStart;
 import javafx.animation.PauseTransition;
@@ -37,27 +36,21 @@ public class JavaFXTemplate extends Application {
     ComboBox<Integer> numDraws;
     int idx = 0;
 
-
     private void fadeTransition(Stage stage, Scene newScene) {
-        // If the stage has no scene yet, just set it (prevents null errors on startup)
         if (stage.getScene() == null || stage.getScene().getRoot() == null) {
             stage.setScene(newScene);
             return;
         }
 
-        // Fade out current scene
         FadeTransition fadeOut = new FadeTransition(Duration.seconds(1), stage.getScene().getRoot());
         fadeOut.setFromValue(1.0);
         fadeOut.setToValue(0.0);
 
         fadeOut.setOnFinished(e -> {
-            // Switch scene
             stage.setScene(newScene);
-
-            // Prepare new scene to fade in
             if (newScene.getRoot() != null) {
                 newScene.getRoot().setOpacity(0);
-                FadeTransition fadeIn = new FadeTransition(Duration.seconds(1), newScene.getRoot());
+                FadeTransition fadeIn = new FadeTransition(Duration.seconds(0.5), newScene.getRoot());
                 fadeIn.setFromValue(0.0);
                 fadeIn.setToValue(1.0);
                 fadeIn.play();
@@ -67,10 +60,9 @@ public class JavaFXTemplate extends Application {
         fadeOut.play();
     }
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		launch(args);
-	}
+    public static void main(String[] args) {
+        launch(args);
+    }
 
     //feel free to remove the starter code from this method
     @Override
@@ -87,32 +79,34 @@ public class JavaFXTemplate extends Application {
         toResults =  new Button("To Results");
 
         try{
-        startToGameButton.setOnAction(e -> primaryStage.setScene(sceneMap.get("game")));
-        PlayButton.setOnAction(e -> fadeTransition(primaryStage, sceneMap.get("drawing")));
-        playAgain.setOnAction(e -> {
-            resetBoardForPlayAgain();
+            startToGameButton.setOnAction(e -> primaryStage.setScene(sceneMap.get("game")));
+            PlayButton.setOnAction(e -> fadeTransition(primaryStage, sceneMap.get("drawing")));
+            playAgain.setOnAction(e -> {
+                resetBoardForPlayAgain();
 
+                sceneMap.put("start", createStartScene());
+                sceneMap.put("game", createGameScene());
+                sceneMap.put("drawing", createDrawingScene());
+                sceneMap.put("result", resultScene());
+
+                fadeTransition(primaryStage, sceneMap.get("start"));
+            });
+//            toResults.setOnAction(e -> fadeTransition(primaryStage, sceneMap.get("result")));
+            toResults.setOnAction(e -> fadeTransition(primaryStage, resultScene()));
+            //# of scenes returned from # of methods; put in hashmap
             sceneMap.put("start", createStartScene());
             sceneMap.put("game", createGameScene());
-            sceneMap.put("drawing", createDrawingScene());
             sceneMap.put("result", resultScene());
+            sceneMap.put("drawing", createDrawingScene());
 
-            fadeTransition(primaryStage, sceneMap.get("start"));
-        });
-        toResults.setOnAction(e -> fadeTransition(primaryStage, sceneMap.get("result")));
-        //# of scenes returned from # of methods; put in hashmap
-        sceneMap.put("start", createStartScene());
-        sceneMap.put("game", createGameScene());
-        sceneMap.put("result", resultScene());
-        sceneMap.put("drawing", createDrawingScene());
+            primaryStage.setScene(sceneMap.get("start"));
 
-        primaryStage.setScene(sceneMap.get("start"));
-
-        primaryStage.show();
+            primaryStage.show();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+
 
     public Scene createStartScene() {
         text.setText("Welcome to Keno Game(Project 2)");
@@ -185,10 +179,12 @@ public class JavaFXTemplate extends Application {
 
         PlayButton.setDisable(true);
 
+        String drawString = "# of Draws";
+        Label drawLabel = new Label(drawString);
         numDraws = new ComboBox<>();
         numDraws.getItems().addAll(1, 2, 3, 4);
-        numDraws.setPromptText("# of draws");
-        VBox conDraws = new VBox(numDraws);
+        numDraws.setPromptText("Select an option");
+        VBox conDraws = new VBox(drawLabel, numDraws);
         conDraws.setSpacing(15);
         conDraws.setAlignment(Pos.TOP_CENTER);
 
@@ -202,7 +198,6 @@ public class JavaFXTemplate extends Application {
 //        root.setTop(conDraws);
         root.setStyle("-fx-background-color: skyblue;");
         root.setTop(menuBarGame);
-        root.setBottom(conDraws);
         root.setCenter(daGrid);
         root.setRight(RightButtons);
         playNums = player.getPlayerPicks();
@@ -228,6 +223,7 @@ public class JavaFXTemplate extends Application {
 
     public Scene createDrawingScene(){
         ArrayList<ArrayList<Integer>> matched = new ArrayList<>();
+
         numDraws.setOnAction(e -> {
             matched.clear();
             Integer draws = numDraws.getValue();
