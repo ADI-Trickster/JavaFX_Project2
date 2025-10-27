@@ -18,8 +18,8 @@ class MyTest {
     @BeforeEach
     void setUp() {
         player  = new Player();
-
     }
+
 	@Test
 	void newPlayerTest() {
         assertEquals(0,player.getPlayerPickSize(),"wrong Start Size");
