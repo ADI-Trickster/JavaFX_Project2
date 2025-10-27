@@ -78,8 +78,16 @@ public class Player {
 
     public void resetPlayer(){
         playerPicks.clear();
-        this.totalWinning = 0;
+        resetWinning();
         this.maxPicks = 0;
+    }
+
+    public void resetWinning(){
+        this.totalWinning = 0;
+    }
+
+    public void decideWinning(){
+
     }
 
 }

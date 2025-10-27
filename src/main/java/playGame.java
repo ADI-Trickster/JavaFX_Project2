@@ -4,6 +4,7 @@ import java.util.Random;
 public class playGame{
     private ArrayList<Integer> drawnNumbers;
     private Random random;
+    private int totalWinnings;
 
     public playGame() {
         drawnNumbers = new ArrayList<>();
