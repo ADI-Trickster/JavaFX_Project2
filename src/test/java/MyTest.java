@@ -144,20 +144,12 @@ class MyTest {
         assertEquals(0,player.getPlayerPickSize(),"wrong number of picks");
         assertEquals(0,player.getTotalWinning(),"wrong total winnings");
         assertEquals(0,player.getMaxPicks(),"wrong max picks");
-
     }
-
-
-
-
-    }
-
 
     //matches per each picks
     //total winning don't set back to 0
 
     //clear removes all numbers
+    }//end of test
 
 
-
-//}
