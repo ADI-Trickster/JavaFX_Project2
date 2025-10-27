@@ -28,6 +28,9 @@ public class JavaFXTemplate extends Application {
     Button randomFill;
     Button clear;
 
+    Button numDraws;
+    int draws;
+
     PauseTransition pause = new PauseTransition(Duration.seconds(3));
     Player player = new Player();
     ArrayList<Integer>  playNums;
@@ -174,14 +177,18 @@ public class JavaFXTemplate extends Application {
     }
 
     public Scene createDrawingScene(){
-        System.out.println("Creating Drawing Scene");
-        playTheGame.draw20Numbers();
-        System.out.println("Got 20 numbers");
-        ArrayList<Integer> matched = playTheGame.matchNumbers(player.getPlayerPicks());
-        System.out.println("Got matching numbers: "+ matched);
+
+        ArrayList<ArrayList<Integer>> matched = new ArrayList<>();
+
+        numDraws.setOnAction(e -> {
+            for(int i = 0; i < draws; i++){
+                playTheGame.draw20Numbers();
+                matched.add(playTheGame.matchNumbers(player.getPlayerPicks()));
+            }
+        });
 
         BorderPane root = new BorderPane();
-        root.setStyle("-fx-background-color: red;");
+        root.setStyle("-fx-background-color: purple;");
 
         int num = 1;
         for(int _x = 0; _x < 10; _x++ ){
@@ -198,7 +205,11 @@ public class JavaFXTemplate extends Application {
 
         Button toMatch = new Button("spin");
         toMatch.setMinWidth(40);
-        toMatch.setOnAction(e -> {handleDrawing(playNums);});
+        toMatch.setOnAction(e -> {
+            for(int i = 0; i < draws; i++){
+                handleDrawing(matched, i);
+            }
+        });
 
         gridToMatch.setAlignment(Pos.CENTER);
         toResults.setPrefSize(200, 100);
@@ -269,24 +280,43 @@ public class JavaFXTemplate extends Application {
         PlayButton.setDisable(false);
     }
 
-    public void handleDrawing(ArrayList<Integer> matches){
-        //players numbers get drawn
-        ArrayList<Integer> toMatch = playTheGame.matchNumbers(matches);
-        System.out.println(player.getPlayerPicks());
-
-        for (int i = 0; i < 80; i++) {
-            Node node = gridToMatch.getChildren().get(i);
-            if (node instanceof Button){
-                    if (toMatch.contains(i+1)) {
-                        node.setStyle("-fx-opacity: 1.0; -fx-background-color: gold;");
-                    }
-//                    else{
-////                        node.setStyle("-fx-opacity: 0.7; -fx-background-color: blue;");
+//    public void handleDrawing(ArrayList<Integer> playerNums, ArrayList<ArrayList<Integer>> matched ){
+//        //players numbers get drawn
+////        ArrayList<Integer> toMatch = playTheGame.matchNumbers(playerNums);
+////        for (int i = 0; i < draws; i++) {
+//            ArrayList<Integer> toMatch = matched[idx];
+//    //        System.out.println(player.getPlayerPicks());
+//
+//            for (int i = 0; i < 80; i++) {
+//                Node node = gridToMatch.getChildren().get(i);
+//                if (node instanceof Button) {
+//                    if (toMatch.contains(i + 1)) {
+//                        node.setStyle("-fx-opacity: 1.0; -fx-background-color: gold;");
 //                    }
+//                }
+//            }
+////        }
+//
+//    }//end of drawing func
+
+public void handleDrawing(ArrayList<ArrayList<Integer>> matched , int idx){
+    //players numbers get drawn
+//        ArrayList<Integer> toMatch = playTheGame.matchNumbers(playerNums);
+//        for (int i = 0; i < draws; i++) {
+    ArrayList<Integer> toMatch = matched.get(idx);
+    //        System.out.println(player.getPlayerPicks());
+
+    for (int i = 0; i < 80; i++) {
+        Node node = gridToMatch.getChildren().get(i);
+        if (node instanceof Button) {
+            if (toMatch.contains(i + 1)) {
+                node.setStyle("-fx-opacity: 1.0; -fx-background-color: gold;");
             }
         }
+    }
+//        }
 
-    }//end of drawing func
+}//end of drawing func
 
     public void resetButtonsDrawing(){
         for (int i = 0; i < 80; i++) {
